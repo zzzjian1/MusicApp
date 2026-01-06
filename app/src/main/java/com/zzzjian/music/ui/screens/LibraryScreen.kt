@@ -32,6 +32,8 @@ import com.zzzjian.music.domain.model.Song
 
 import kotlinx.coroutines.launch
 
+import com.zzzjian.music.domain.model.MockData
+
 @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun LibraryScreen(vm: PlayerViewModel) {
@@ -48,7 +50,6 @@ fun LibraryScreen(vm: PlayerViewModel) {
             .systemBarsPadding() // Handle status bar inset
     ) {
         // Header
-        Spacer(modifier = Modifier.height(10.dp))
         Column(modifier = Modifier.fillMaxWidth()) {
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -80,7 +81,7 @@ fun LibraryScreen(vm: PlayerViewModel) {
         }
         
         // Search Bar
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(12.dp))
         TextField(
             value = "",
             onValueChange = {},
@@ -127,16 +128,16 @@ fun LibraryScreen(vm: PlayerViewModel) {
         }
 
         // Pager Content
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(8.dp)) // Reduced spacing
         HorizontalPager(
             state = pagerState,
             modifier = Modifier.fillMaxSize()
         ) { page ->
             when (page) {
                 0 -> SongList(songs, vm)
-                1 -> PlaceholderPage("暂无收藏歌曲")
-                2 -> PlaceholderPage("暂无最近播放")
-                3 -> PlaceholderPage("暂无下载歌曲")
+                1 -> SongList(MockData.favoriteSongs, vm)
+                2 -> SongList(MockData.recentSongs, vm)
+                3 -> SongList(MockData.downloadedSongs, vm)
             }
         }
     }
