@@ -39,25 +39,34 @@ fun LibraryScreen(vm: PlayerViewModel) {
     ) {
         // Header
         Spacer(modifier = Modifier.height(10.dp))
-        Row(
-            modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = "音乐库",
-                fontSize = 30.sp,
-                fontWeight = FontWeight.Bold,
-                color = TextGray900
-            )
-            IconButton(
-                onClick = { /* TODO */ },
-                modifier = Modifier
-                    .size(36.dp)
-                    .background(Color(0xFFF3F4F6), CircleShape)
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.Default.Add, contentDescription = "Add", tint = Blue500)
+                Text(
+                    text = "哈基米",
+                    fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = TextGray900
+                )
+                IconButton(
+                    onClick = { /* TODO */ },
+                    modifier = Modifier
+                        .size(36.dp)
+                        .background(Color(0xFFF3F4F6), CircleShape)
+                ) {
+                    Icon(Icons.Default.Add, contentDescription = "Add", tint = Blue500)
+                }
             }
+            Text(
+                text = "哈基米一下，烦恼全放下",
+                fontSize = 13.sp,
+                color = Blue500,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(top = 2.dp)
+            )
         }
         
         // Search Bar
@@ -121,7 +130,7 @@ fun LibraryScreen(vm: PlayerViewModel) {
                 ) {
                     // Cover
                     AsyncImage(
-                        model = s.coverUrl ?: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=128&h=128&fit=crop",
+                        model = s.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=128&h=128&fit=crop", // Cute Cat
                         contentDescription = null,
                         modifier = Modifier
                             .size(56.dp)

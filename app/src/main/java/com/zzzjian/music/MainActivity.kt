@@ -121,7 +121,7 @@ fun MiniPlayer(vm: PlayerViewModel, onClick: () -> Unit, modifier: Modifier = Mo
         ) {
             // Spin animation logic can be added later
             AsyncImage(
-                model = song.coverUrl ?: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=128&h=128&fit=crop",
+                model = song.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=128&h=128&fit=crop", // Cute Cat
                 contentDescription = null,
                 modifier = Modifier
                     .size(48.dp)

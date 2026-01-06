@@ -34,16 +34,22 @@ import androidx.compose.ui.graphics.graphicsLayer
 
 import com.zzzjian.music.ui.theme.*
 
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.ui.platform.LocalContext
+import android.widget.Toast
+
 @Composable
 fun PlayerScreen(vm: PlayerViewModel) {
     val state by vm.playback.collectAsState()
     val song = state.currentSong
+    val context = LocalContext.current
+    var isLiked by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier.fillMaxSize()) {
         // Blurred Background
         if (song != null) {
             AsyncImage(
-                model = song.coverUrl ?: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=800&h=800&fit=crop",
+                model = song.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&h=800&fit=crop", // Cute Cat
                 contentDescription = null,
                 modifier = Modifier
                     .fillMaxSize()
@@ -93,7 +99,7 @@ fun PlayerScreen(vm: PlayerViewModel) {
                     .aspectRatio(1f)
             ) {
                 AsyncImage(
-                    model = song?.coverUrl ?: "https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=600&h=600&fit=crop",
+                    model = song?.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&h=600&fit=crop", // Cute Cat
                     contentDescription = null,
                     modifier = Modifier.fillMaxSize(),
                     contentScale = ContentScale.Crop
@@ -125,12 +131,21 @@ fun PlayerScreen(vm: PlayerViewModel) {
                     )
                 }
                 IconButton(
-                    onClick = { /* Like */ },
+                    onClick = {
+                        isLiked = !isLiked
+                        if (isLiked) {
+                            Toast.makeText(context, "哈基米～ 🐱", Toast.LENGTH_SHORT).show()
+                        }
+                    },
                     modifier = Modifier
                         .size(40.dp)
                         .background(Gray200.copy(alpha = 0.5f), CircleShape)
                 ) {
-                    Icon(Icons.Default.FavoriteBorder, null, tint = TextGray500)
+                    Icon(
+                        if (isLiked) Icons.Default.Favorite else Icons.Default.FavoriteBorder,
+                        null,
+                        tint = if (isLiked) Color.Red else TextGray500
+                    )
                 }
             }
 
