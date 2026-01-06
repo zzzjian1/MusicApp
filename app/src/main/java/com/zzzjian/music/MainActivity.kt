@@ -73,10 +73,8 @@ fun App(vm: PlayerViewModel) {
     
     val navBackStackEntry by nav.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
-    val showBottomBar = currentRoute != "player" // Hide bottom bar on full player screen if desired, or keep it. Prototype has it.
-
     Scaffold(
-        bottomBar = { if (showBottomBar) BottomBar(nav) },
+        bottomBar = { BottomBar(nav) },
         containerColor = BgGray50
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
