@@ -43,7 +43,8 @@ MusicApp 是一款基于 Android 平台的现代化本地音乐播放器，采�
 *   **构建工具**：Gradle (Kotlin DSL)
 
 ## 📱 原型设计
-<img width="2560" height="1229" alt="image" src="https://github.com/user-attachments/assets/cfff9b2e-fe2d-4021-a692-8e8f517927e9" />
+<img width="2031" height="1220" alt="image" src="https://github.com/user-attachments/assets/f9d96b69-2376-496c-b473-e2be9007a965" />
+
 本项目包含一套完整的高保真 HTML 原型，位于 `docs/music-player` 目录下。
 原型采用 **Tailwind CSS** + **FontAwesome** 构建，模拟了 **iPhone 15 Pro** 的外壳展示效果。
 
