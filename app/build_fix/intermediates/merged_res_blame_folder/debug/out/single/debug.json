@@ -1,0 +1,62 @@
+[
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/mipmap-xxxhdpi_ic_launcher.webp.flat",
+        "source": "com.zzzjian.music.app-main-58:/mipmap-xxxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/mipmap-mdpi_ic_launcher_round.webp.flat",
+        "source": "com.zzzjian.music.app-main-58:/mipmap-mdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/mipmap-xxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.zzzjian.music.app-main-58:/mipmap-xxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/drawable_ic_launcher_foreground.xml.flat",
+        "source": "com.zzzjian.music.app-main-58:/drawable/ic_launcher_foreground.xml"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/drawable_ic_launcher_background.xml.flat",
+        "source": "com.zzzjian.music.app-main-58:/drawable/ic_launcher_background.xml"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/mipmap-hdpi_ic_launcher_round.webp.flat",
+        "source": "com.zzzjian.music.app-main-58:/mipmap-hdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/mipmap-xhdpi_ic_launcher.webp.flat",
+        "source": "com.zzzjian.music.app-main-58:/mipmap-xhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/xml_backup_rules.xml.flat",
+        "source": "com.zzzjian.music.app-main-58:/xml/backup_rules.xml"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/mipmap-xxhdpi_ic_launcher.webp.flat",
+        "source": "com.zzzjian.music.app-main-58:/mipmap-xxhdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/mipmap-xhdpi_ic_launcher_round.webp.flat",
+        "source": "com.zzzjian.music.app-main-58:/mipmap-xhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/mipmap-mdpi_ic_launcher.webp.flat",
+        "source": "com.zzzjian.music.app-main-58:/mipmap-mdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/xml_network_security_config.xml.flat",
+        "source": "com.zzzjian.music.app-main-58:/xml/network_security_config.xml"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/mipmap-xxxhdpi_ic_launcher_round.webp.flat",
+        "source": "com.zzzjian.music.app-main-58:/mipmap-xxxhdpi/ic_launcher_round.webp"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/mipmap-hdpi_ic_launcher.webp.flat",
+        "source": "com.zzzjian.music.app-main-58:/mipmap-hdpi/ic_launcher.webp"
+    },
+    {
+        "merged": "com.zzzjian.music.app-merged_res-56:/xml_data_extraction_rules.xml.flat",
+        "source": "com.zzzjian.music.app-main-58:/xml/data_extraction_rules.xml"
+    }
+]

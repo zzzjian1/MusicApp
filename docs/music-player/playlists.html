@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>播放列表与设置</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    ::-webkit-scrollbar { display: none; }
+    .toggle-checkbox:checked {
+      right: 0;
+      border-color: #3b82f6;
+    }
+    .toggle-checkbox:checked + .toggle-label {
+      background-color: #3b82f6;
+    }
+  </style>
+  <script>
+    function switchTab(tab) {
+      document.getElementById('content-list').style.display = tab === 'list' ? 'block' : 'none';
+      document.getElementById('content-settings').style.display = tab === 'settings' ? 'block' : 'none';
+      
+      const btnList = document.getElementById('btn-list');
+      const btnSettings = document.getElementById('btn-settings');
+      
+      if(tab === 'list') {
+        btnList.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
+        btnList.classList.remove('text-gray-500', 'hover:bg-gray-200/50');
+        btnSettings.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
+        btnSettings.classList.add('text-gray-500', 'hover:bg-gray-200/50');
+      } else {
+        btnSettings.classList.add('bg-white', 'text-gray-900', 'shadow-sm');
+        btnSettings.classList.remove('text-gray-500', 'hover:bg-gray-200/50');
+        btnList.classList.remove('bg-white', 'text-gray-900', 'shadow-sm');
+        btnList.classList.add('text-gray-500', 'hover:bg-gray-200/50');
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 text-gray-900 h-screen flex flex-col overflow-hidden">
+
+  <!-- iOS Status Bar -->
+  <div class="h-[54px] w-full bg-white flex justify-between items-end px-6 pb-2 text-sm font-medium select-none z-20">
+    <span>9:41</span>
+    <div class="flex gap-1.5 items-center">
+      <i class="fas fa-signal"></i>
+      <i class="fas fa-wifi"></i>
+      <i class="fas fa-battery-full"></i>
+    </div>
+  </div>
+
+  <!-- Header & Segmented Control -->
+  <div class="px-5 pt-2 pb-4 bg-white sticky top-0 z-10 border-b border-gray-100">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-3xl font-bold tracking-tight">播放列表</h1>
+      <button class="text-blue-500 font-semibold text-[17px]">新建</button>
+    </div>
+    
+    <!-- Sub-page Tabs (Segmented Control) -->
+    <div class="w-full bg-gray-100 p-1 rounded-xl grid grid-cols-2 gap-1">
+      <button id="btn-list" onclick="switchTab('list')" class="py-1.5 rounded-lg text-[13px] font-semibold bg-white text-gray-900 shadow-sm transition-all">我的列表</button>
+      <button id="btn-settings" onclick="switchTab('settings')" class="py-1.5 rounded-lg text-[13px] font-semibold text-gray-500 hover:bg-gray-200/50 transition-all">相关设置</button>
+    </div>
+  </div>
+
+  <!-- Content Area -->
+  <div class="flex-1 overflow-y-auto pb-32 bg-gray-50">
+    
+    <!-- Playlist Content -->
+    <div id="content-list" class="p-5 space-y-4">
+      
+      <!-- Create New Card -->
+      <div class="flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors border-dashed border-2 border-gray-300">
+        <div class="w-16 h-16 rounded-xl bg-gray-100 flex items-center justify-center text-gray-400">
+          <i class="fas fa-plus text-2xl"></i>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-semibold text-[17px] text-blue-500">创建新歌单</h3>
+          <p class="text-gray-400 text-[13px]">添加你喜欢的音乐</p>
+        </div>
+      </div>
+
+      <!-- List Item 1 -->
+      <div class="flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+        <div class="w-16 h-16 rounded-xl bg-gradient-to-br from-purple-500 to-blue-500 flex items-center justify-center text-white shadow-md">
+          <i class="fas fa-heart text-2xl"></i>
+        </div>
+        <div class="flex-1">
+          <h3 class="font-semibold text-[17px]">我喜欢的音乐</h3>
+          <p class="text-gray-500 text-[13px]">128 首歌曲 · 刚刚更新</p>
+        </div>
+        <i class="fas fa-chevron-right text-gray-300 text-sm"></i>
+      </div>
+
+      <!-- List Item 2 -->
+      <div class="flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+        <div class="w-16 h-16 rounded-xl overflow-hidden shadow-md relative">
+           <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=128&h=128&fit=crop" class="absolute inset-0 w-full h-full object-cover">
+        </div>
+        <div class="flex-1">
+          <h3 class="font-semibold text-[17px]">车载劲爆</h3>
+          <p class="text-gray-500 text-[13px]">45 首歌曲 · 昨天</p>
+        </div>
+        <i class="fas fa-chevron-right text-gray-300 text-sm"></i>
+      </div>
+
+      <!-- List Item 3 -->
+      <div class="flex items-center gap-4 p-4 rounded-2xl bg-white border border-gray-100 shadow-sm cursor-pointer hover:bg-gray-50 transition-colors">
+        <div class="w-16 h-16 rounded-xl overflow-hidden shadow-md relative">
+           <img src="https://images.unsplash.com/photo-1619983081563-430f63602796?w=128&h=128&fit=crop" class="absolute inset-0 w-full h-full object-cover">
+        </div>
+        <div class="flex-1">
+          <h3 class="font-semibold text-[17px]">放松助眠</h3>
+          <p class="text-gray-500 text-[13px]">22 首歌曲 · 上周</p>
+        </div>
+        <i class="fas fa-chevron-right text-gray-300 text-sm"></i>
+      </div>
+
+    </div>
+
+    <!-- Settings Content -->
+    <div id="content-settings" class="p-5 space-y-6 hidden">
+      
+      <!-- Group 1 -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-4 flex justify-between items-center border-b border-gray-50">
+          <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-full bg-gray-900 flex items-center justify-center text-white"><i class="fas fa-moon text-sm"></i></div>
+            <span class="font-medium">深色模式</span>
+          </div>
+          <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+            <input type="checkbox" name="toggle" id="dark-mode" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300"/>
+            <label for="dark-mode" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+          </div>
+        </div>
+        <div class="p-4 flex justify-between items-center">
+          <div class="flex items-center gap-3">
+             <div class="w-8 h-8 rounded-full bg-blue-500 flex items-center justify-center text-white"><i class="fas fa-sliders text-sm"></i></div>
+            <span class="font-medium">音效调节</span>
+          </div>
+          <i class="fas fa-chevron-right text-gray-300 text-sm"></i>
+        </div>
+      </div>
+
+      <!-- Group 2 -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="p-4 flex justify-between items-center border-b border-gray-50">
+          <div class="flex items-center gap-3">
+             <div class="w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white"><i class="fas fa-folder-open text-sm"></i></div>
+            <span class="font-medium">扫描本地音乐</span>
+          </div>
+          <span class="text-gray-400 text-sm">自动</span>
+        </div>
+        <div class="p-4 flex justify-between items-center">
+          <div class="flex items-center gap-3">
+             <div class="w-8 h-8 rounded-full bg-purple-500 flex items-center justify-center text-white"><i class="fas fa-high-quality text-sm"></i></div>
+            <span class="font-medium">高音质优先</span>
+          </div>
+          <div class="relative inline-block w-12 mr-2 align-middle select-none transition duration-200 ease-in">
+            <input type="checkbox" name="toggle" id="hq-mode" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer border-gray-300"/>
+            <label for="hq-mode" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
+          </div>
+        </div>
+      </div>
+
+      <div class="text-center text-gray-400 text-xs pt-4">
+        Version 1.0.0 (Build 20240101)
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- Bottom Tab Bar -->
+  <div class="h-[84px] bg-white border-t border-gray-100 flex justify-around items-start pt-3 pb-8 absolute bottom-0 w-full z-40">
+    <button class="flex flex-col items-center gap-1 w-16 text-gray-400 hover:text-gray-600">
+      <i class="fas fa-music text-xl"></i>
+      <span class="text-[10px] font-medium">音乐库</span>
+    </button>
+    <button class="flex flex-col items-center gap-1 w-16 text-gray-400 hover:text-gray-600">
+      <i class="fas fa-compact-disc text-xl"></i>
+      <span class="text-[10px] font-medium">播放</span>
+    </button>
+    <button class="flex flex-col items-center gap-1 w-16 text-blue-500">
+      <i class="fas fa-list-ul text-xl"></i>
+      <span class="text-[10px] font-medium">播放列表</span>
+    </button>
+  </div>
+
+</body>
+</html>

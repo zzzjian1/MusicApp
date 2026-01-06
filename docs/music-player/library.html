@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>音乐库</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    /* Hide scrollbar for clean UI */
+    ::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900 h-screen flex flex-col overflow-hidden">
+
+  <!-- iOS Status Bar Placeholder -->
+  <div class="h-[54px] w-full bg-white flex justify-between items-end px-6 pb-2 text-sm font-medium select-none z-20">
+    <span>9:41</span>
+    <div class="flex gap-1.5 items-center">
+      <i class="fas fa-signal"></i>
+      <i class="fas fa-wifi"></i>
+      <i class="fas fa-battery-full"></i>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="px-5 pt-2 pb-4 bg-white sticky top-0 z-10">
+    <div class="flex justify-between items-center mb-4">
+      <h1 class="text-3xl font-bold tracking-tight">音乐库</h1>
+      <button class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-blue-500">
+        <i class="fas fa-plus"></i>
+      </button>
+    </div>
+    
+    <!-- Search Bar -->
+    <div class="relative group">
+      <i class="fas fa-search absolute left-3 top-3 text-gray-400 group-focus-within:text-blue-500 transition-colors"></i>
+      <input type="text" placeholder="搜索歌曲、艺术家、专辑" 
+        class="w-full bg-gray-100 rounded-xl py-2.5 pl-10 pr-4 text-[17px] placeholder-gray-500 outline-none focus:ring-2 focus:ring-blue-500/20 transition-all">
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="flex-1 overflow-y-auto px-5 pb-32 space-y-2">
+    
+    <!-- Categories -->
+    <div class="flex gap-3 overflow-x-auto pb-4 pt-2 -mx-5 px-5 no-scrollbar">
+      <button class="whitespace-nowrap px-5 py-2 rounded-full bg-blue-500 text-white font-medium shadow-lg shadow-blue-500/30">全部歌曲</button>
+      <button class="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-gray-200 text-gray-600 font-medium">收藏</button>
+      <button class="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-gray-200 text-gray-600 font-medium">最近播放</button>
+      <button class="whitespace-nowrap px-5 py-2 rounded-full bg-white border border-gray-200 text-gray-600 font-medium">下载</button>
+    </div>
+
+    <!-- Song List -->
+    <div class="space-y-1">
+      
+      <!-- Item 1 -->
+      <div class="flex items-center gap-4 p-2 rounded-2xl active:bg-gray-100 transition-colors cursor-pointer group">
+        <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=128&h=128&fit=crop" class="w-14 h-14 rounded-xl shadow-sm object-cover group-hover:shadow-md transition-all">
+        <div class="flex-1 min-w-0">
+          <h3 class="font-semibold text-[17px] truncate">Midnight City</h3>
+          <p class="text-gray-500 text-[14px] truncate">M83 · Hurry Up, We're Dreaming</p>
+        </div>
+        <button class="text-gray-300 hover:text-blue-500 px-2"><i class="fas fa-ellipsis"></i></button>
+      </div>
+
+      <!-- Item 2 -->
+      <div class="flex items-center gap-4 p-2 rounded-2xl active:bg-gray-100 transition-colors cursor-pointer group">
+        <img src="https://images.unsplash.com/photo-1493225255756-d9584f8606e9?w=128&h=128&fit=crop" class="w-14 h-14 rounded-xl shadow-sm object-cover group-hover:shadow-md transition-all">
+        <div class="flex-1 min-w-0">
+          <h3 class="font-semibold text-[17px] truncate">Starboy</h3>
+          <p class="text-gray-500 text-[14px] truncate">The Weeknd, Daft Punk</p>
+        </div>
+        <button class="text-gray-300 hover:text-blue-500 px-2"><i class="fas fa-ellipsis"></i></button>
+      </div>
+
+      <!-- Item 3 -->
+      <div class="flex items-center gap-4 p-2 rounded-2xl active:bg-gray-100 transition-colors cursor-pointer group">
+        <img src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?w=128&h=128&fit=crop" class="w-14 h-14 rounded-xl shadow-sm object-cover group-hover:shadow-md transition-all">
+        <div class="flex-1 min-w-0">
+          <h3 class="font-semibold text-[17px] truncate">Shape of You</h3>
+          <p class="text-gray-500 text-[14px] truncate">Ed Sheeran · Divide</p>
+        </div>
+        <button class="text-gray-300 hover:text-blue-500 px-2"><i class="fas fa-ellipsis"></i></button>
+      </div>
+
+      <!-- Item 4 -->
+      <div class="flex items-center gap-4 p-2 rounded-2xl active:bg-gray-100 transition-colors cursor-pointer group">
+        <img src="https://images.unsplash.com/photo-1459749411177-0473ef716089?w=128&h=128&fit=crop" class="w-14 h-14 rounded-xl shadow-sm object-cover group-hover:shadow-md transition-all">
+        <div class="flex-1 min-w-0">
+          <h3 class="font-semibold text-[17px] truncate">Plants</h3>
+          <p class="text-gray-500 text-[14px] truncate">Crumb · Jinx</p>
+        </div>
+        <button class="text-gray-300 hover:text-blue-500 px-2"><i class="fas fa-ellipsis"></i></button>
+      </div>
+
+      <!-- Item 5 -->
+      <div class="flex items-center gap-4 p-2 rounded-2xl active:bg-gray-100 transition-colors cursor-pointer group">
+        <img src="https://images.unsplash.com/photo-1514525253440-b393452e8d26?w=128&h=128&fit=crop" class="w-14 h-14 rounded-xl shadow-sm object-cover group-hover:shadow-md transition-all">
+        <div class="flex-1 min-w-0">
+          <h3 class="font-semibold text-[17px] truncate">Blinding Lights</h3>
+          <p class="text-gray-500 text-[14px] truncate">The Weeknd · After Hours</p>
+        </div>
+        <button class="text-gray-300 hover:text-blue-500 px-2"><i class="fas fa-ellipsis"></i></button>
+      </div>
+       <!-- Item 6 -->
+      <div class="flex items-center gap-4 p-2 rounded-2xl active:bg-gray-100 transition-colors cursor-pointer group">
+        <img src="https://images.unsplash.com/photo-1621360841013-c768371e93cf?w=128&h=128&fit=crop" class="w-14 h-14 rounded-xl shadow-sm object-cover group-hover:shadow-md transition-all">
+        <div class="flex-1 min-w-0">
+          <h3 class="font-semibold text-[17px] truncate">Levitating</h3>
+          <p class="text-gray-500 text-[14px] truncate">Dua Lipa · Future Nostalgia</p>
+        </div>
+        <button class="text-gray-300 hover:text-blue-500 px-2"><i class="fas fa-ellipsis"></i></button>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Mini Player -->
+  <div class="absolute bottom-[88px] left-4 right-4 bg-white/90 backdrop-blur-xl border border-white/20 shadow-[0_8px_32px_rgba(0,0,0,0.12)] p-2 rounded-2xl flex items-center gap-3 z-30 cursor-pointer hover:bg-white transition-colors">
+    <img src="https://images.unsplash.com/photo-1470225620780-dba8ba36b745?w=128&h=128&fit=crop" class="w-10 h-10 rounded-lg shadow-sm animate-[spin_8s_linear_infinite]" style="animation-play-state: paused;">
+    <div class="flex-1 min-w-0">
+      <div class="font-semibold text-sm truncate">Midnight City</div>
+      <div class="text-xs text-gray-500 truncate">M83</div>
+    </div>
+    <div class="flex items-center gap-1 pr-2">
+      <button class="w-8 h-8 flex items-center justify-center text-gray-800 hover:bg-gray-100 rounded-full"><i class="fas fa-play text-sm"></i></button>
+      <button class="w-8 h-8 flex items-center justify-center text-gray-800 hover:bg-gray-100 rounded-full"><i class="fas fa-forward text-sm"></i></button>
+    </div>
+  </div>
+
+  <!-- Bottom Tab Bar -->
+  <div class="h-[84px] bg-white border-t border-gray-100 flex justify-around items-start pt-3 pb-8 absolute bottom-0 w-full z-40">
+    <button class="flex flex-col items-center gap-1 w-16 text-blue-500">
+      <i class="fas fa-music text-xl"></i>
+      <span class="text-[10px] font-medium">音乐库</span>
+    </button>
+    <button class="flex flex-col items-center gap-1 w-16 text-gray-400 hover:text-gray-600">
+      <i class="fas fa-compact-disc text-xl"></i>
+      <span class="text-[10px] font-medium">播放</span>
+    </button>
+    <button class="flex flex-col items-center gap-1 w-16 text-gray-400 hover:text-gray-600">
+      <i class="fas fa-list-ul text-xl"></i>
+      <span class="text-[10px] font-medium">播放列表</span>
+    </button>
+  </div>
+
+</body>
+</html>

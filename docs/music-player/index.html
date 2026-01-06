@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MusicApp 高保真原型展示</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { background: #eef0f4; font-family: 'Inter', sans-serif; padding: 40px; }
+    .device-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(380px, 1fr));
+      gap: 60px;
+      justify-items: center;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    
+    /* iPhone 15 Pro Frame Simulation */
+    .iphone-frame {
+      position: relative;
+      width: 393px; /* iPhone 15 Pro Logical Width */
+      height: 852px; /* iPhone 15 Pro Logical Height */
+      background: #000;
+      border-radius: 55px;
+      box-shadow: 
+        0 0 0 12px #3a3a3a, /* Frame bezel */
+        0 0 0 14px #1a1a1a, /* Outer edge */
+        0 20px 50px -10px rgba(0,0,0,0.5); /* Drop shadow */
+      overflow: hidden;
+      padding: 14px; /* Bezel inner spacing */
+      box-sizing: content-box;
+    }
+
+    .iphone-screen {
+      width: 100%;
+      height: 100%;
+      background: #fff;
+      border-radius: 44px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .dynamic-island {
+      position: absolute;
+      top: 22px; /* Relative to screen top */
+      left: 50%;
+      transform: translateX(-50%);
+      width: 120px;
+      height: 36px;
+      background: #000;
+      border-radius: 20px;
+      z-index: 999;
+    }
+
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+      background: #fff;
+    }
+
+    .label {
+      margin-top: 20px;
+      font-size: 18px;
+      font-weight: 600;
+      color: #374151;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="text-center mb-12">
+    <h1 class="text-3xl font-bold text-gray-800 mb-2">MusicApp 高保真原型</h1>
+    <p class="text-gray-500">模拟 iPhone 15 Pro · 真实交互流程</p>
+  </div>
+
+  <div class="device-grid">
+    
+    <!-- 音乐库 -->
+    <div>
+      <div class="iphone-frame">
+        <div class="iphone-screen">
+          <div class="dynamic-island"></div>
+          <iframe src="library.html"></iframe>
+        </div>
+      </div>
+      <div class="label">音乐库 (Library)</div>
+    </div>
+
+    <!-- 播放器 -->
+    <div>
+      <div class="iphone-frame">
+        <div class="iphone-screen">
+          <div class="dynamic-island"></div>
+          <iframe src="player.html"></iframe>
+        </div>
+      </div>
+      <div class="label">播放器 (Player)</div>
+    </div>
+
+    <!-- 播放列表/设置 -->
+    <div>
+      <div class="iphone-frame">
+        <div class="iphone-screen">
+          <div class="dynamic-island"></div>
+          <iframe src="playlists.html"></iframe>
+        </div>
+      </div>
+      <div class="label">播放列表 & 设置 (Playlists)</div>
+    </div>
+
+  </div>
+
+</body>
+</html>
