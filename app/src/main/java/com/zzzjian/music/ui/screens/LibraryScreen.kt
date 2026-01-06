@@ -128,13 +128,14 @@ fun LibraryScreen(vm: PlayerViewModel) {
         }
 
         // Pager Content
-        Spacer(modifier = Modifier.height(8.dp)) // Reduced spacing
+        Spacer(modifier = Modifier.height(4.dp))
         HorizontalPager(
             state = pagerState,
-            modifier = Modifier.fillMaxSize()
+            modifier = Modifier.fillMaxSize(),
+            verticalAlignment = Alignment.Top
         ) { page ->
             when (page) {
-                0 -> SongList(songs, vm)
+                0 -> SongList(MockData.allSongs, vm)
                 1 -> SongList(MockData.favoriteSongs, vm)
                 2 -> SongList(MockData.recentSongs, vm)
                 3 -> SongList(MockData.downloadedSongs, vm)
@@ -160,7 +161,7 @@ fun SongList(songs: List<Song>, vm: PlayerViewModel) {
             ) {
                 // Cover
                 AsyncImage(
-                    model = s.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=128&h=128&fit=crop", // Cute Cat
+                    model = s.coverUrl ?: "https://c-ssl.duitang.com/uploads/blog/202111/11/20211111134414_00463.jpg", // Cute Cat
                     contentDescription = null,
                     modifier = Modifier
                         .size(56.dp)
