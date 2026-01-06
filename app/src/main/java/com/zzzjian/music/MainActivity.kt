@@ -46,6 +46,8 @@ import com.zzzjian.music.ui.screens.PlayerScreen
 import com.zzzjian.music.ui.screens.PlaylistsScreen
 import com.zzzjian.music.ui.theme.*
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+
 class MainActivity : ComponentActivity() {
     private val vm: PlayerViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -201,7 +203,10 @@ fun BottomNavItem(item: TabItem, isSelected: Boolean, onClick: () -> Unit) {
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier
-            .clickable(onClick = onClick)
+            .clickable(
+                interactionSource = remember { MutableInteractionSource() },
+                indication = null
+            ) { onClick() }
             .padding(8.dp)
     ) {
         Icon(
