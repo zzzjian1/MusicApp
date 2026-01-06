@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.slideInVertically
@@ -52,6 +53,7 @@ class MainActivity : ComponentActivity() {
     private val vm: PlayerViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
         ensurePermissions()
         setContent {
             MusicTheme {
@@ -77,7 +79,8 @@ fun App(vm: PlayerViewModel) {
     val currentRoute = navBackStackEntry?.destination?.route
     Scaffold(
         bottomBar = { BottomBar(nav) },
-        containerColor = BgGray50
+        containerColor = BgGray50,
+        contentWindowInsets = WindowInsets(0, 0, 0, 0) // We handle insets manually or let background fill
     ) { padding ->
         Box(modifier = Modifier.fillMaxSize().padding(padding)) {
             NavGraph(nav, vm)

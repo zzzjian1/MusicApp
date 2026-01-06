@@ -68,8 +68,9 @@ fun PlayerScreen(vm: PlayerViewModel) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .statusBarsPadding() // Add status bar padding
                 .padding(horizontal = 32.dp)
-                .padding(top = 40.dp, bottom = 100.dp), // Bottom padding for nav bar space if needed
+                .padding(top = 20.dp, bottom = 100.dp), // Reduce top padding as we now have status bar padding
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Drag Indicator

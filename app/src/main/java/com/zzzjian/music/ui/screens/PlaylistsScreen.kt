@@ -29,6 +29,7 @@ fun PlaylistsScreen(vm: PlayerViewModel) {
             .fillMaxSize()
             .background(BgGray50)
             .padding(horizontal = 20.dp)
+            .systemBarsPadding()
     ) {
         // Header
         Spacer(modifier = Modifier.height(10.dp))
