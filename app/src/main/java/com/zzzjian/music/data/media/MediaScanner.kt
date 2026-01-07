@@ -5,6 +5,8 @@ import android.net.Uri
 import android.provider.MediaStore
 import com.zzzjian.music.domain.model.Song
 
+import android.content.ContentUris
+
 class MediaScanner {
     fun scanSongs(context: Context): List<Song> {
         val list = mutableListOf<Song>()
@@ -16,9 +18,12 @@ class MediaScanner {
             MediaStore.Audio.Media.ALBUM,
             MediaStore.Audio.Media.DURATION,
             MediaStore.Audio.Media.DATA,
-            MediaStore.Audio.Media.ALBUM_ID
+            MediaStore.Audio.Media.ALBUM_ID,
+            MediaStore.Audio.Media.MIME_TYPE
         )
-        val selection = MediaStore.Audio.Media.IS_MUSIC + "!= 0"
+        // More robust selection: Music OR explicit FLAC support
+        val selection = "(${MediaStore.Audio.Media.IS_MUSIC} != 0 OR ${MediaStore.Audio.Media.MIME_TYPE} LIKE 'audio/flac' OR ${MediaStore.Audio.Media.MIME_TYPE} LIKE 'application/x-flac')"
+        
         context.contentResolver.query(uri, projection, selection, null, null)?.use { c ->
             val idIdx = c.getColumnIndexOrThrow(MediaStore.Audio.Media._ID)
             val titleIdx = c.getColumnIndexOrThrow(MediaStore.Audio.Media.TITLE)
@@ -35,6 +40,9 @@ class MediaScanner {
                 val duration = c.getLong(durationIdx)
                 val path = c.getString(dataIdx) ?: ""
                 val albumId = c.getLong(albumIdIdx)
+                
+                val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id).toString()
+                
                 list.add(
                     com.zzzjian.music.domain.model.Song(
                         id,
@@ -43,7 +51,9 @@ class MediaScanner {
                         album,
                         duration,
                         path,
-                        albumId
+                        albumId,
+                        null,
+                        contentUri
                     )
                 )
             }

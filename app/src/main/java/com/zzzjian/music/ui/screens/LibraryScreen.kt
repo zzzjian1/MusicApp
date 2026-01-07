@@ -17,6 +17,9 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.MoreHoriz
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -145,6 +148,8 @@ fun LibraryScreen(vm: PlayerViewModel) {
     val scope = rememberCoroutineScope()
     var searchQuery by remember { mutableStateOf("") }
     var showScanDialog by remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
+    var showClearDialog by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
 
     fun filterSongs(list: List<Song>): List<Song> {
@@ -188,13 +193,42 @@ fun LibraryScreen(vm: PlayerViewModel) {
                         fontWeight = FontWeight.Bold,
                         color = TextGray900
                     )
-                    IconButton(
-                        onClick = { showScanDialog = true },
-                        modifier = Modifier
-                            .size(36.dp)
-                            .background(Color(0xFFF3F4F6), CircleShape)
-                    ) {
-                        Icon(Icons.Default.Add, contentDescription = "Add", tint = Blue500)
+                    Box {
+                        IconButton(
+                            onClick = { showMenu = true },
+                            modifier = Modifier
+                                .size(36.dp)
+                                .background(Color(0xFFF3F4F6), CircleShape)
+                        ) {
+                            Icon(Icons.Default.MoreVert, contentDescription = "More", tint = Blue500)
+                        }
+                        
+                        DropdownMenu(
+                            expanded = showMenu,
+                            onDismissRequest = { showMenu = false },
+                            modifier = Modifier.background(Color.White)
+                        ) {
+                            DropdownMenuItem(
+                                text = { Text("扫描本地音乐") },
+                                onClick = { 
+                                    showMenu = false
+                                    showScanDialog = true 
+                                },
+                                leadingIcon = {
+                                    Icon(Icons.Default.Refresh, contentDescription = null, tint = Blue500)
+                                }
+                            )
+                            DropdownMenuItem(
+                                text = { Text("清空音乐库", color = Color.Red) },
+                                onClick = { 
+                                    showMenu = false
+                                    showClearDialog = true 
+                                },
+                                leadingIcon = {
+                                    Icon(Icons.Default.Delete, contentDescription = null, tint = Color.Red)
+                                }
+                            )
+                        }
                     }
                 }
                 Text(
@@ -361,6 +395,34 @@ fun LibraryScreen(vm: PlayerViewModel) {
                     snackbarHostState.showSnackbar("已开始扫描本地音乐...", duration = SnackbarDuration.Short)
                 }
             }
+        )
+    }
+    
+    if (showClearDialog) {
+        AlertDialog(
+            onDismissRequest = { showClearDialog = false },
+            title = { Text(text = "清空音乐库") },
+            text = { Text(text = "确定要清空乐库吗？此操作将移除列表中的所有歌曲（不会删除本地文件）。") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        vm.clearAllSongs()
+                        showClearDialog = false
+                        scope.launch {
+                            snackbarHostState.showSnackbar("已清空音乐库")
+                        }
+                    }
+                ) {
+                    Text("确定", color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showClearDialog = false }) {
+                    Text("取消", color = TextGray500)
+                }
+            },
+            containerColor = Color.White,
+            shape = RoundedCornerShape(16.dp)
         )
     }
 }

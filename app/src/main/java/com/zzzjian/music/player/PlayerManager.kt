@@ -86,7 +86,7 @@ object PlayerManager {
         val p = exo ?: return
         currentPlaylist = songs
         p.clearMediaItems()
-        songs.forEach { s -> p.addMediaItem(MediaItem.fromUri(s.path)) }
+        songs.forEach { s -> p.addMediaItem(MediaItem.fromUri(s.contentUri)) }
         p.seekTo(index, 0L)
         p.prepare()
         p.play()
@@ -98,7 +98,7 @@ object PlayerManager {
         val p = exo ?: return
         currentPlaylist = songs
         p.clearMediaItems()
-        songs.forEach { s -> p.addMediaItem(MediaItem.fromUri(s.path)) }
+        songs.forEach { s -> p.addMediaItem(MediaItem.fromUri(s.contentUri)) }
         p.seekTo(0, 0L)
         p.prepare()
         // Do NOT play
@@ -154,5 +154,19 @@ object PlayerManager {
         val p = exo ?: return
         p.seekTo(position)
         _state.value = _state.value.copy(position = position)
+    }
+
+    fun stop() {
+        val p = exo ?: return
+        p.stop()
+        p.clearMediaItems()
+        _state.value = _state.value.copy(
+            isPlaying = false, 
+            currentSong = null, 
+            position = 0L, 
+            duration = 0L
+        )
+        currentPlaylist = emptyList()
+        stopProgressUpdater()
     }
 }

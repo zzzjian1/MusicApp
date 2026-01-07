@@ -47,9 +47,23 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
             }
             
             _songs.value = s
-            _favoriteSongs.value = MockData.favoriteSongs
-            _recentSongs.value = MockData.recentSongs
-            _downloadedSongs.value = MockData.downloadedSongs
+            
+            // Auto-classify Downloaded songs based on path
+            val realDownloads = s.filter { song -> 
+                song.path.contains("Download", ignoreCase = true) || 
+                song.path.contains("Downloader", ignoreCase = true)
+            }
+            
+            _favoriteSongs.value = MockData.favoriteSongs // Still mock for now, needs DB
+            _recentSongs.value = MockData.recentSongs // Still mock
+            
+            // Merge mock downloads with real ones for demo purposes, or just use real ones
+            // Let's prioritize real downloads if any found, otherwise keep mock to show UI
+            if (realDownloads.isNotEmpty()) {
+                _downloadedSongs.value = realDownloads
+            } else {
+                _downloadedSongs.value = MockData.downloadedSongs
+            }
             
             _currentQueue = s // Default queue
             if (s.isNotEmpty()) {
@@ -123,5 +137,11 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
             list.add(song)
         }
         targetFlow.value = list
+    }
+
+    fun clearAllSongs() {
+        _songs.value = emptyList()
+        _currentQueue = emptyList()
+        PlayerManager.stop()
     }
 }

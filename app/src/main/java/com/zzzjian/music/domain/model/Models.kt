@@ -8,7 +8,8 @@ data class Song(
     val duration: Long,
     val path: String,
     val albumId: Long?,
-    val coverUrl: String? = null
+    val coverUrl: String? = null,
+    val contentUri: String = path
 )
 
 data class Playlist(
