@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>猫窝</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    ::-webkit-scrollbar { display: none; }
+  </style>
+</head>
+<body class="bg-gray-50 text-gray-900 h-screen flex flex-col overflow-hidden">
+
+  <!-- iOS Status Bar -->
+  <div class="h-[54px] w-full bg-white flex justify-between items-end px-6 pb-2 text-sm font-medium select-none z-20">
+    <span>9:41</span>
+    <div class="flex gap-1.5 items-center">
+      <i class="fas fa-signal"></i>
+      <i class="fas fa-wifi"></i>
+      <i class="fas fa-battery-full"></i>
+    </div>
+  </div>
+
+  <!-- Header -->
+  <div class="px-5 pt-2 pb-4 bg-white sticky top-0 z-10">
+    <div class="flex justify-between items-center mb-2">
+      <h1 class="text-3xl font-bold tracking-tight">猫窝</h1>
+      <button class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-pink-500 hover:bg-gray-200 transition-colors" title="打招呼">
+        <i class="fas fa-heart"></i>
+      </button>
+    </div>
+    <div class="text-xs text-blue-500 font-medium">哈基米一下，烦恼全放下</div>
+  </div>
+
+  <!-- Content -->
+  <div class="flex-1 overflow-y-auto px-5 pb-32 space-y-4">
+    <!-- Cat Card 1 -->
+    <div class="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm flex items-center gap-4">
+      <img src="https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=128&h=128&fit=crop" class="w-16 h-16 rounded-xl object-cover shadow-sm">
+      <div class="flex-1 min-w-0">
+        <div class="font-semibold text-[17px] truncate">哈基米 · 今日心情</div>
+        <div class="text-gray-500 text-[14px] truncate">今天也在认真听音乐呢～</div>
+      </div>
+      <button class="px-3 py-1.5 rounded-full bg-pink-50 text-pink-500 text-sm font-semibold hover:bg-pink-100">摸一摸</button>
+    </div>
+
+    <!-- Cat Card 2 -->
+    <div class="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+      <div class="flex items-center justify-between mb-3">
+        <div class="font-semibold text-[16px]">猫咪成就</div>
+        <span class="text-xs text-gray-400">今日 · 3 项</span>
+      </div>
+      <div class="grid grid-cols-3 gap-3">
+        <div class="p-3 bg-gray-50 rounded-xl text-center">
+          <i class="fas fa-music text-blue-500 mb-2"></i>
+          <div class="text-xs text-gray-600">陪你听歌</div>
+        </div>
+        <div class="p-3 bg-gray-50 rounded-xl text-center">
+          <i class="fas fa-heart text-pink-500 mb-2"></i>
+          <div class="text-xs text-gray-600">贴贴加成</div>
+        </div>
+        <div class="p-3 bg-gray-50 rounded-xl text-center">
+          <i class="fas fa-bed text-green-500 mb-2"></i>
+          <div class="text-xs text-gray-600">午睡 20 分钟</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Actions -->
+    <div class="p-4 bg-white rounded-2xl border border-gray-100 shadow-sm">
+      <div class="font-semibold text-[16px] mb-3">互动</div>
+      <div class="flex items-center gap-3">
+        <button class="flex-1 px-4 py-2.5 rounded-xl bg-blue-500 text-white font-semibold hover:bg-blue-600">哈基米～</button>
+        <button class="flex-1 px-4 py-2.5 rounded-xl bg-gray-100 text-gray-800 font-semibold hover:bg-gray-200">投喂小鱼干</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bottom Tab Bar -->
+  <div class="h-[84px] bg-white border-t border-gray-100 flex justify-around items-start pt-3 pb-8 absolute bottom-0 w-full z-40">
+    <button class="flex flex-col items-center gap-1 w-16 text-gray-400 hover:text-gray-600">
+      <i class="fas fa-music text-xl"></i>
+      <span class="text-[10px] font-medium">音乐库</span>
+    </button>
+    <button class="flex flex-col items-center gap-1 w-16 text-gray-400 hover:text-gray-600">
+      <i class="fas fa-compact-disc text-xl"></i>
+      <span class="text-[10px] font-medium">播放</span>
+    </button>
+    <button class="flex flex-col items-center gap-1 w-16 text-blue-500">
+      <i class="fas fa-heart text-xl"></i>
+      <span class="text-[10px] font-medium">猫窝</span>
+    </button>
+  </div>
+
+</body>
+</html>

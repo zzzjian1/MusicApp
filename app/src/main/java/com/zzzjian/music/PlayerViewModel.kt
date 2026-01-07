@@ -54,9 +54,9 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
             // Try to load real songs first
             var s = repo.getAllSongs(getApplication())
             // Fallback to MockData if no local songs found (for testing/demo)
-            if (s.isEmpty()) {
-                s = MockData.allSongs
-            }
+            // if (s.isEmpty()) {
+            //    s = MockData.allSongs
+            // }
             
             _songs.value = s
             
@@ -66,15 +66,15 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
                 song.path.contains("Downloader", ignoreCase = true)
             }
             
-            _favoriteSongs.value = MockData.favoriteSongs // Still mock for now, needs DB
-            _recentSongs.value = MockData.recentSongs // Still mock
+            _favoriteSongs.value = emptyList() // MockData.favoriteSongs
+            _recentSongs.value = emptyList() // MockData.recentSongs
             
             // Merge mock downloads with real ones for demo purposes, or just use real ones
             // Let's prioritize real downloads if any found, otherwise keep mock to show UI
             if (realDownloads.isNotEmpty()) {
                 _downloadedSongs.value = realDownloads
             } else {
-                _downloadedSongs.value = MockData.downloadedSongs
+                _downloadedSongs.value = emptyList() // MockData.downloadedSongs
             }
             
             _currentQueue = s // Default queue
