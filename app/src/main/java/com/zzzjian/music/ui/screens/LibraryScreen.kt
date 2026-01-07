@@ -42,7 +42,23 @@ import com.zzzjian.music.domain.model.Song
 import com.zzzjian.music.domain.model.MockData
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import kotlin.random.Random
+import kotlin.math.absoluteValue
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.offset
+import androidx.compose.foundation.layout.width
+import androidx.compose.ui.zIndex
+import androidx.compose.foundation.layout.fillMaxHeight
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.ScrollableTabRow
+import androidx.compose.material3.Tab
+import androidx.compose.material3.TabRowDefaults
+import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
+import androidx.compose.runtime.getValue
+import androidx.compose.animation.animateColorAsState
+import androidx.compose.ui.unit.lerp
 
 @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
@@ -134,26 +150,98 @@ fun LibraryScreen(vm: PlayerViewModel) {
 
             // Categories
             Spacer(modifier = Modifier.height(16.dp))
-            LazyRow(
-                horizontalArrangement = Arrangement.spacedBy(12.dp)
+            
+            // Custom Tab Layout with Floating Capsule Indicator
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(36.dp)
             ) {
-                items(categories.size) { idx ->
-                    val isSelected = pagerState.currentPage == idx
-                    val bg = if (isSelected) Blue500 else White
-                    val text = if (isSelected) White else Color(0xFF4B5563)
-                    val border = if (isSelected) Color.Transparent else BorderGray100
-                    
-                    Surface(
-                        onClick = { 
-                            scope.launch { pagerState.animateScrollToPage(idx) }
-                        },
-                        color = bg,
-                        shape = RoundedCornerShape(50),
-                        border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, border) else null,
-                        modifier = Modifier.height(36.dp)
-                    ) {
-                        Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 20.dp)) {
-                            Text(text = categories[idx], color = text, fontSize = 14.sp, fontWeight = FontWeight.Medium)
+                // Background Track (Optional, keeping it transparent for now)
+                
+                // We need to layout the tabs to measure them, then place the indicator
+                // Since we have a fixed number of items, we can use a Row with weights or specific spacing.
+                // But LazyRow was used for scrolling. If categories fit on screen, Row is better.
+                // Assuming 4 categories fit on screen? "全部歌曲", "收藏", "最近播放", "下载" might overflow on small screens.
+                // Let's stick to ScrollableTabRow logic but implemented manually for the "Capsule" effect.
+                
+                // For simplicity and better animation control, let's use a ScrollableTabRow-like structure
+                // But ScrollableTabRow's indicator API is a bit rigid for a "background capsule".
+                // So we build a custom one using a Scrollable Row.
+                
+                val scrollState = rememberScrollState()
+                
+                // Store the width and x-position of each tab
+                // Map: Index -> (X, Width)
+                // We can't easily get this from a LazyRow.
+                // Let's use a Row and horizontalScroll if items fit, or just ScrollableRow.
+                
+                // Since the user asked for animation, let's use `TabRow` if items fit, or `ScrollableTabRow`.
+                // Material3 ScrollableTabRow supports `indicator`.
+                // We can provide a custom indicator that is a Box with rounded corners.
+                // BUT, the standard indicator is usually a line at the bottom.
+                // We want a full background capsule.
+                
+                // Let's try to use a simple Row for now, assuming they fit or user scrolls Pager.
+                // Wait, if user swipes Pager, the Tabs should scroll?
+                // The prompt says "四个标签" (Four tabs), they likely fit.
+                
+                ScrollableTabRow(
+                    selectedTabIndex = pagerState.currentPage,
+                    edgePadding = 0.dp,
+                    containerColor = Color.Transparent,
+                    contentColor = TextGray900,
+                    divider = {},
+                    indicator = { tabPositions ->
+                        // Custom Capsule Indicator
+                        // Only draw if we have valid positions
+                        if (tabPositions.isNotEmpty()) {
+                            val currentTab = tabPositions[pagerState.currentPage.coerceIn(tabPositions.indices)]
+                            
+                            // Calculate target width and offset based on pager offset for smooth animation
+                            val currentFraction = pagerState.currentPageOffsetFraction
+                            val targetIndex = if (currentFraction > 0) pagerState.currentPage + 1 else pagerState.currentPage - 1
+                            
+                            // Safe guard bounds
+                            val validTargetIndex = targetIndex.coerceIn(0, tabPositions.lastIndex)
+                            val targetTab = tabPositions[validTargetIndex]
+                            
+                            // Interpolate
+                            val fraction = currentFraction.absoluteValue
+                            val indicatorWidth = androidx.compose.ui.unit.lerp(currentTab.width, targetTab.width, fraction)
+                            val indicatorOffset = androidx.compose.ui.unit.lerp(currentTab.left, targetTab.left, fraction)
+                            
+                            Box(
+                                Modifier
+                                    .fillMaxHeight()
+                                    .width(indicatorWidth)
+                                    .offset(x = indicatorOffset)
+                                    .padding(4.dp)
+                                    .background(Blue500, RoundedCornerShape(50))
+                            )
+                        }
+                    },
+                    modifier = Modifier.fillMaxWidth().height(44.dp) // Increased height to accommodate padding
+                ) {
+                    categories.forEachIndexed { index, title ->
+                        val isSelected = pagerState.currentPage == index
+                        
+                        Tab(
+                            selected = isSelected,
+                            onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
+                            modifier = Modifier.zIndex(1f) // Ensure text is above indicator
+                        ) {
+                            // Text color animation
+                            val targetColor = if (isSelected) Color.White else TextGray500
+                            val animatedColor by animateColorAsState(targetColor, animationSpec = tween(300))
+                            
+                            Text(
+                                text = title,
+                                color = animatedColor,
+                                fontSize = 14.sp,
+                                fontWeight = FontWeight.Medium,
+                                modifier = Modifier.padding(horizontal = 12.dp, vertical = 10.dp)
+                            )
                         }
                     }
                 }
