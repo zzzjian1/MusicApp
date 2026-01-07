@@ -4,6 +4,11 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.*
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.ui.zIndex
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.ui.text.input.TextFieldValue
+import androidx.compose.ui.window.Dialog
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -52,6 +57,22 @@ fun PetScreen() {
     
     // Cat Style State
     var catSeed by remember { mutableStateOf(Random.nextLong()) }
+    var catName by remember { mutableStateOf("哈基米") }
+    var showRenameDialog by remember { mutableStateOf(false) }
+    var thoughtBubble by remember { mutableStateOf<String?>(null) }
+    
+    // Thoughts pool
+    val thoughts = listOf(
+        "讨厌，你干嘛~", 
+        "再摸就要秃了!", 
+        "只要小鱼干，不要摸摸!", 
+        "今天的铲屎官有点烦...", 
+        "呼噜呼噜...", 
+        "愚蠢的人类!",
+        "朕要休息了!",
+        "莫挨老子!",
+        "好舒服喵~"
+    )
     
     // Heart particles
     val hearts = remember { mutableStateListOf<HeartParticle>() }
@@ -98,9 +119,13 @@ fun PetScreen() {
                         
                         if (touchCount > 1) {
                             comboText = "连击 x$touchCount!"
+                            // Random Thought Bubble
+                            if (Random.nextFloat() < 0.3f) { // 30% chance
+                                thoughtBubble = thoughts.random()
+                            }
                             // Special effects for high combo
-                        if (touchCount % 5 == 0) {
-                            // Big Combo Effect
+                            if (touchCount % 5 == 0) {
+                                // Big Combo Effect
                             repeat(10) {
                                 hearts.add(HeartParticle(
                                     id = Random.nextLong(),
@@ -135,6 +160,9 @@ fun PetScreen() {
                             }
                             delay(2000)
                             isHappy = false
+                            // thoughtBubble = null // Don't clear immediately, let it fade out naturally or stay longer
+                            delay(1000) 
+                            thoughtBubble = null
                         }
                     }
                 )
@@ -147,18 +175,50 @@ fun PetScreen() {
                 .padding(20.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                text = "哈基米的小窝",
-                fontSize = 28.sp,
-                fontWeight = FontWeight.Bold,
-                color = TextGray900,
-                modifier = Modifier.padding(top = 20.dp)
-            )
+            Row(
+                verticalAlignment = Alignment.CenterVertically,
+                modifier = Modifier
+                    .padding(top = 20.dp)
+                    .clickable { showRenameDialog = true }
+                    .background(Color.White.copy(alpha = 0.5f), RoundedCornerShape(20.dp))
+                    .padding(horizontal = 16.dp, vertical = 8.dp)
+            ) {
+                Text(
+                    text = "$catName 的小窝",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = TextGray900
+                )
+                Spacer(modifier = Modifier.width(8.dp))
+                Icon(Icons.Default.Edit, contentDescription = "Rename", tint = TextGray900, modifier = Modifier.size(20.dp))
+            }
             
             Spacer(modifier = Modifier.weight(1f))
             
             // The Cat
             Box(contentAlignment = Alignment.Center) {
+                // Thought Bubble
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = thoughtBubble != null,
+                    enter = androidx.compose.animation.scaleIn() + androidx.compose.animation.fadeIn(),
+                    exit = androidx.compose.animation.fadeOut(),
+                    modifier = Modifier.align(Alignment.TopEnd).offset(x = (-20).dp, y = (-20).dp).zIndex(1f)
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .background(Color.White, RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp, bottomEnd = 0.dp, bottomStart = 20.dp))
+                            .border(2.dp, TextGray900, RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp, bottomEnd = 0.dp, bottomStart = 20.dp))
+                            .padding(16.dp)
+                    ) {
+                        Text(
+                            text = thoughtBubble ?: "",
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = TextGray900
+                        )
+                    }
+                }
+
                 InteractiveCat(
                     touchPosition = touchPosition,
                     isHappy = isHappy,
@@ -209,6 +269,43 @@ fun PetScreen() {
         hearts.forEach { particle ->
             HeartAnimation(particle) {
                 hearts.remove(particle)
+            }
+        }
+    }
+
+    if (showRenameDialog) {
+        var tempName by remember { mutableStateOf(TextFieldValue(catName)) }
+        Dialog(onDismissRequest = { showRenameDialog = false }) {
+            Surface(
+                shape = RoundedCornerShape(16.dp),
+                color = Color.White
+            ) {
+                Column(
+                    modifier = Modifier.padding(20.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text("给猫咪取个名字", fontSize = 18.sp, fontWeight = FontWeight.Bold, color = TextGray900)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    OutlinedTextField(
+                        value = tempName,
+                        onValueChange = { tempName = it },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                    Spacer(modifier = Modifier.height(20.dp))
+                    Button(
+                        onClick = {
+                            if (tempName.text.isNotBlank()) {
+                                catName = tempName.text
+                            }
+                            showRenameDialog = false
+                        },
+                        modifier = Modifier.fillMaxWidth(),
+                        colors = ButtonDefaults.buttonColors(containerColor = Blue500)
+                    ) {
+                        Text("确定")
+                    }
+                }
             }
         }
     }
