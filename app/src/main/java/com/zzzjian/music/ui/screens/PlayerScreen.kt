@@ -36,6 +36,8 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.input.pointer.pointerInput
 import android.widget.Toast
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import com.zzzjian.music.utils.ArtistImageMapper
 import com.zzzjian.music.PlayerViewModel
 import com.zzzjian.music.domain.model.RepeatMode
 import com.zzzjian.music.domain.model.Song
@@ -81,8 +83,16 @@ fun PlayerScreen(vm: PlayerViewModel) {
         ) { currentSong ->
             if (currentSong != null) {
                 Box(modifier = Modifier.fillMaxSize()) {
+                    val artistImage = ArtistImageMapper.getArtistImage(currentSong.artist)
+                    val fallbackImage = artistImage ?: com.zzzjian.music.R.drawable.ic_hajimi_logo
+                    
                     AsyncImage(
-                        model = currentSong.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&h=800&fit=crop",
+                        model = ImageRequest.Builder(LocalContext.current)
+                            .data(currentSong.coverUrl)
+                            .error(fallbackImage)
+                            .fallback(fallbackImage)
+                            .crossfade(true)
+                            .build(),
                         contentDescription = null,
                         modifier = Modifier
                             .fillMaxSize()
@@ -202,8 +212,16 @@ fun PlayerScreen(vm: PlayerViewModel) {
                             }
                             .background(Color.White, RoundedCornerShape(32.dp)) // Add explicit background to ensure shadow works
                     ) {
+                        val artistImage = ArtistImageMapper.getArtistImage(currentSong?.artist)
+                        val fallbackImage = artistImage ?: com.zzzjian.music.R.drawable.ic_hajimi_logo
+                        
                         AsyncImage(
-                            model = currentSong?.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&h=600&fit=crop",
+                            model = ImageRequest.Builder(LocalContext.current)
+                                .data(currentSong?.coverUrl)
+                                .error(fallbackImage)
+                                .fallback(fallbackImage)
+                                .crossfade(true)
+                                .build(),
                             contentDescription = null,
                             modifier = Modifier.fillMaxSize(),
                             contentScale = ContentScale.Crop

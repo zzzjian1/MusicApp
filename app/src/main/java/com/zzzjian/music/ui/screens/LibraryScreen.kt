@@ -37,6 +37,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import com.zzzjian.music.utils.ArtistImageMapper
 import com.zzzjian.music.PlayerViewModel
 import com.zzzjian.music.SongListType
 import com.zzzjian.music.ui.theme.*
@@ -560,8 +564,16 @@ fun HoldToDeleteItem(
         ) {
             // Cover
             Box {
+                val artistImage = ArtistImageMapper.getArtistImage(song.artist)
+                val fallbackImage = artistImage ?: com.zzzjian.music.R.drawable.ic_hajimi_logo // Default fallback (e.g. logo or cat)
+                
                 AsyncImage(
-                    model = song.coverUrl ?: "https://c-ssl.duitang.com/uploads/blog/202111/11/20211111134414_00463.jpg", // Cute Cat
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(song.coverUrl)
+                        .error(fallbackImage)
+                        .fallback(fallbackImage)
+                        .crossfade(true)
+                        .build(),
                     contentDescription = null,
                     modifier = Modifier
                         .size(56.dp)
