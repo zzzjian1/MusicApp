@@ -22,7 +22,13 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     fun initialize() {
         PlayerManager.initialize(getApplication())
         viewModelScope.launch {
-            val s = repo.getAllSongs(getApplication())
+            // Try to load real songs first
+            var s = repo.getAllSongs(getApplication())
+            // Fallback to MockData if no local songs found (for testing/demo)
+            if (s.isEmpty()) {
+                s = com.zzzjian.music.domain.model.MockData.allSongs
+            }
+            
             _songs.value = s
             _currentQueue = s // Default queue
             if (s.isNotEmpty()) {
@@ -50,5 +56,21 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
 
     fun setRepeat(mode: RepeatMode) {
         PlayerManager.setRepeat(mode)
+    }
+
+    fun deleteSong(song: Song) {
+        val currentList = _songs.value.toMutableList()
+        currentList.remove(song)
+        _songs.value = currentList
+    }
+
+    fun restoreSong(song: Song, index: Int) {
+        val currentList = _songs.value.toMutableList()
+        if (index in 0..currentList.size) {
+            currentList.add(index, song)
+        } else {
+            currentList.add(song)
+        }
+        _songs.value = currentList
     }
 }
