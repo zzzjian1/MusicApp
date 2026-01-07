@@ -68,7 +68,7 @@
 ### 编译运行
 1.  克隆项目到本地：
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/zzzjian1/MusicApp.git
     ```
 2.  使用 Android Studio 打开项目根目录 `d:\MusicApp`。
 3.  等待 Gradle Sync 完成。
