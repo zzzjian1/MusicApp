@@ -25,6 +25,9 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
             val s = repo.getAllSongs(getApplication())
             _songs.value = s
             _currentQueue = s // Default queue
+            if (s.isNotEmpty()) {
+                PlayerManager.prepareQueue(s)
+            }
         }
     }
 
@@ -38,11 +41,11 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun next() {
-        PlayerManager.next(_currentQueue)
+        PlayerManager.next()
     }
 
     fun previous() {
-        PlayerManager.previous(_currentQueue)
+        PlayerManager.previous()
     }
 
     fun setRepeat(mode: RepeatMode) {

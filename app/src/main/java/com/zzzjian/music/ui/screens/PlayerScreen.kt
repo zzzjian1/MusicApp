@@ -1,7 +1,10 @@
 package com.zzzjian.music.ui.screens
 
+import androidx.compose.animation.*
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.detectHorizontalDragGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -13,6 +16,7 @@ import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.filled.Shuffle
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material.icons.filled.SkipPrevious
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -20,26 +24,26 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.compose.ui.input.pointer.pointerInput
+import android.widget.Toast
 import coil.compose.AsyncImage
 import com.zzzjian.music.PlayerViewModel
 import com.zzzjian.music.domain.model.RepeatMode
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.graphicsLayer
-
+import com.zzzjian.music.domain.model.Song
 import com.zzzjian.music.ui.theme.*
+import kotlinx.coroutines.launch
+import kotlin.math.absoluteValue
 
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.ui.platform.LocalContext
-import android.widget.Toast
-
-import androidx.compose.foundation.interaction.MutableInteractionSource
-
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun PlayerScreen(vm: PlayerViewModel) {
     val state by vm.playback.collectAsState()
@@ -47,38 +51,62 @@ fun PlayerScreen(vm: PlayerViewModel) {
     val context = LocalContext.current
     var isLiked by remember { mutableStateOf(false) }
 
+    // Animation States
+    var slideDirection by remember { mutableStateOf(AnimatedContentTransitionScope.SlideDirection.Start) }
+    
+    // Drag States
+    val offsetX = remember { Animatable(0f) }
+    val rotationAnim = remember { Animatable(0f) }
+    val scope = rememberCoroutineScope()
+    
+    // Reset offset when song changes (handled by AnimatedContent usually, but good for safety)
+    LaunchedEffect(song) {
+        offsetX.snapTo(0f)
+        rotationAnim.snapTo(0f)
+    }
+
     Box(modifier = Modifier.fillMaxSize()) {
         // Blurred Background
-        if (song != null) {
-            AsyncImage(
-                model = song.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&h=800&fit=crop", // Cute Cat
-                contentDescription = null,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .scale(1.2f)
-                    .blur(50.dp),
-                contentScale = ContentScale.Crop
-            )
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(
-                        Brush.verticalGradient(
-                            colors = listOf(Color.White.copy(alpha = 0.3f), Color.White.copy(alpha = 0.8f))
-                        )
+        AnimatedContent(
+            targetState = song,
+            transitionSpec = {
+                fadeIn(animationSpec = tween(500)) togetherWith fadeOut(animationSpec = tween(500))
+            },
+            label = "BackgroundAnimation"
+        ) { currentSong ->
+            if (currentSong != null) {
+                Box(modifier = Modifier.fillMaxSize()) {
+                    AsyncImage(
+                        model = currentSong.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=800&h=800&fit=crop",
+                        contentDescription = null,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .scale(1.2f)
+                            .blur(50.dp),
+                        contentScale = ContentScale.Crop
                     )
-            )
-        } else {
-            Box(modifier = Modifier.fillMaxSize().background(BgGray50))
+                    Box(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .background(
+                                Brush.verticalGradient(
+                                    colors = listOf(Color.White.copy(alpha = 0.3f), Color.White.copy(alpha = 0.8f))
+                                )
+                            )
+                    )
+                }
+            } else {
+                Box(modifier = Modifier.fillMaxSize().background(BgGray50))
+            }
         }
 
         // Content
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .statusBarsPadding() // Add status bar padding
+                .statusBarsPadding()
                 .padding(horizontal = 32.dp)
-                .padding(top = 20.dp, bottom = 100.dp), // Reduce top padding as we now have status bar padding
+                .padding(top = 20.dp, bottom = 100.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             // Drag Indicator
@@ -90,28 +118,90 @@ fun PlayerScreen(vm: PlayerViewModel) {
                     .background(Color.Gray.copy(alpha = 0.5f))
             )
             
-            Spacer(modifier = Modifier.height(20.dp)) // Fixed spacer instead of weight
+            Spacer(modifier = Modifier.height(20.dp))
 
-            // Album Art
+            // Album Art with Swipe Animation
             Box(
                 modifier = Modifier
-                    .weight(1.2f) // Increased weight to make album art larger
-                    .fillMaxWidth(),
+                    .weight(1.2f)
+                    .fillMaxWidth()
+                    .pointerInput(Unit) {
+                        detectHorizontalDragGestures(
+                            onDragEnd = {
+                                val threshold = 300f
+                                scope.launch {
+                                    if (offsetX.value > threshold) {
+                                        // Dragged Right -> Previous
+                                        slideDirection = AnimatedContentTransitionScope.SlideDirection.End
+                                        // Animate out
+                                        offsetX.animateTo(1000f, tween(300))
+                                        vm.previous()
+                                    } else if (offsetX.value < -threshold) {
+                                        // Dragged Left -> Next
+                                        slideDirection = AnimatedContentTransitionScope.SlideDirection.Start
+                                        // Animate out
+                                        offsetX.animateTo(-1000f, tween(300))
+                                        vm.next()
+                                    } else {
+                                        // Snap back
+                                        offsetX.animateTo(0f, spring())
+                                        rotationAnim.animateTo(0f, spring())
+                                    }
+                                }
+                            },
+                            onHorizontalDrag = { change, dragAmount ->
+                                change.consume()
+                                scope.launch {
+                                    offsetX.snapTo(offsetX.value + dragAmount)
+                                    // Calculate rotation: max 15 degrees at 300px drag
+                                    rotationAnim.snapTo((offsetX.value / 20).coerceIn(-15f, 15f))
+                                }
+                            }
+                        )
+                    },
                 contentAlignment = Alignment.Center
             ) {
-                Card(
-                    shape = RoundedCornerShape(32.dp),
-                    elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
-                    modifier = Modifier
-                        .aspectRatio(1f) // Maintain square aspect ratio
-                        .fillMaxHeight(0.95f) // Slightly reduce max height to avoid touching edges
-                ) {
-                    AsyncImage(
-                        model = song?.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&h=600&fit=crop", // Cute Cat
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Crop
-                    )
+                AnimatedContent(
+                    targetState = song,
+                    transitionSpec = {
+                        val slideIn = slideIntoContainer(slideDirection, tween(500))
+                        val slideOut = slideOutOfContainer(
+                            // If entering from Start (Right-to-Left), exit towards End (Left).
+                            // Wait, Start = Left side? No.
+                            // SlideDirection.Start = enters from Start (Left) towards End (Right).
+                            // If going Next (Left swipe), new song enters from Right (End).
+                            // So slideDirection should be Left (End).
+                            if (slideDirection == AnimatedContentTransitionScope.SlideDirection.Start) 
+                                AnimatedContentTransitionScope.SlideDirection.End 
+                            else 
+                                AnimatedContentTransitionScope.SlideDirection.Start,
+                            tween(500)
+                        )
+                        (slideIn + fadeIn() + scaleIn(initialScale = 0.85f)) togetherWith 
+                        (slideOut + fadeOut() + scaleOut(targetScale = 0.85f))
+                    },
+                    label = "CoverAnimation"
+                ) { currentSong ->
+                    Card(
+                        shape = RoundedCornerShape(32.dp),
+                        elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
+                        modifier = Modifier
+                            .aspectRatio(1f)
+                            .fillMaxHeight(0.95f)
+                            .graphicsLayer {
+                                translationX = offsetX.value
+                                rotationZ = rotationAnim.value
+                                // Add transparency when dragging far
+                                alpha = 1f - (offsetX.value.absoluteValue / 1000f).coerceIn(0f, 1f)
+                            }
+                    ) {
+                        AsyncImage(
+                            model = currentSong?.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&h=600&fit=crop",
+                            contentDescription = null,
+                            modifier = Modifier.fillMaxSize(),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
                 }
             }
             
@@ -124,13 +214,15 @@ fun PlayerScreen(vm: PlayerViewModel) {
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Column(modifier = Modifier.weight(1f)) {
-                    Text(
-                        text = song?.title ?: "Not Playing",
-                        fontSize = 24.sp,
-                        fontWeight = FontWeight.Bold,
-                        color = TextGray900,
-                        maxLines = 1
-                    )
+                    AnimatedContent(targetState = song?.title, label = "TitleAnim") { title ->
+                        Text(
+                            text = title ?: "Not Playing",
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold,
+                            color = TextGray900,
+                            maxLines = 1
+                        )
+                    }
                     Text(
                         text = song?.artist ?: "Unknown Artist",
                         fontSize = 18.sp,
@@ -193,7 +285,10 @@ fun PlayerScreen(vm: PlayerViewModel) {
                 }
                 
                 Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(32.dp)) {
-                    IconButton(onClick = { vm.previous() }) {
+                    IconButton(onClick = { 
+                        slideDirection = AnimatedContentTransitionScope.SlideDirection.End
+                        vm.previous() 
+                    }) {
                         Icon(Icons.Default.SkipPrevious, null, tint = TextGray900, modifier = Modifier.size(36.dp))
                     }
                     
@@ -212,7 +307,10 @@ fun PlayerScreen(vm: PlayerViewModel) {
                         )
                     }
                     
-                    IconButton(onClick = { vm.next() }) {
+                    IconButton(onClick = { 
+                        slideDirection = AnimatedContentTransitionScope.SlideDirection.Start
+                        vm.next() 
+                    }) {
                         Icon(Icons.Default.SkipNext, null, tint = TextGray900, modifier = Modifier.size(36.dp))
                     }
                 }
@@ -228,7 +326,7 @@ fun PlayerScreen(vm: PlayerViewModel) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .requiredHeight(44.dp) // Force height to not be compressed
+                    .requiredHeight(44.dp)
                     .background(Color(0xFFE5E7EB), RoundedCornerShape(22.dp))
                     .padding(4.dp)
             ) {
@@ -257,7 +355,7 @@ fun PlayerScreen(vm: PlayerViewModel) {
                 }
             }
             
-            Spacer(modifier = Modifier.height(24.dp)) // Fixed spacer instead of weight
+            Spacer(modifier = Modifier.height(24.dp))
         }
     }
 }
