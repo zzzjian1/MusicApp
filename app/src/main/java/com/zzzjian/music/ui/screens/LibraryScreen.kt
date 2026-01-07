@@ -144,14 +144,13 @@ fun LibraryScreen(vm: PlayerViewModel) {
                     val border = if (isSelected) Color.Transparent else BorderGray100
                     
                     Surface(
+                        onClick = { 
+                            scope.launch { pagerState.animateScrollToPage(idx) }
+                        },
                         color = bg,
                         shape = RoundedCornerShape(50),
                         border = if (!isSelected) androidx.compose.foundation.BorderStroke(1.dp, border) else null,
-                        modifier = Modifier
-                            .height(36.dp)
-                            .clickable { 
-                                scope.launch { pagerState.animateScrollToPage(idx) }
-                            }
+                        modifier = Modifier.height(36.dp)
                     ) {
                         Box(contentAlignment = Alignment.Center, modifier = Modifier.padding(horizontal = 20.dp)) {
                             Text(text = categories[idx], color = text, fontSize = 14.sp, fontWeight = FontWeight.Medium)
