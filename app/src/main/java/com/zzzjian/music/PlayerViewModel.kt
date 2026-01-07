@@ -39,6 +39,18 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     fun initialize() {
         PlayerManager.initialize(getApplication())
         viewModelScope.launch {
+            // Observe playback state to update recent songs on auto-next
+            PlayerManager.state.collect { state ->
+                state.currentSong?.let { song ->
+                    // Avoid adding duplicate if it's the same as top
+                    if (_recentSongs.value.firstOrNull() != song) {
+                        addToRecent(song)
+                    }
+                }
+            }
+        }
+
+        viewModelScope.launch {
             // Try to load real songs first
             var s = repo.getAllSongs(getApplication())
             // Fallback to MockData if no local songs found (for testing/demo)
@@ -75,6 +87,22 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     fun play(songs: List<Song>, index: Int) {
         _currentQueue = songs
         PlayerManager.setQueue(songs, index)
+        
+        // Add to recent
+        val song = songs.getOrNull(index)
+        if (song != null) {
+            addToRecent(song)
+        }
+    }
+    
+    private fun addToRecent(song: Song) {
+        val currentList = _recentSongs.value.toMutableList()
+        currentList.remove(song) // Remove if exists to move to top
+        currentList.add(0, song) // Add to top
+        if (currentList.size > 50) { // Limit recent history size
+            currentList.removeAt(currentList.lastIndex)
+        }
+        _recentSongs.value = currentList
     }
 
     fun playPause() {

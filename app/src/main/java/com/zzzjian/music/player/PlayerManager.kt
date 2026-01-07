@@ -35,6 +35,10 @@ object PlayerManager {
 
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
             updateCurrentSong()
+            // Notify ViewModel? PlayerManager is singleton, doesn't know VM.
+            // But VM observes state. VM should handle recent logic when song changes.
+            // Actually, play() calls addToRecent, but auto-next doesn't.
+            // We need a callback or just expose currentSong flow which VM observes.
         }
 
         override fun onPlaybackStateChanged(playbackState: Int) {
