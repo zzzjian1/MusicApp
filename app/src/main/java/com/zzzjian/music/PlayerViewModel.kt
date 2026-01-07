@@ -79,6 +79,10 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         PlayerManager.setRepeat(mode)
     }
 
+    fun seekTo(position: Long) {
+        PlayerManager.seekTo(position)
+    }
+
     fun deleteSong(song: Song, type: SongListType = SongListType.ALL) {
         when (type) {
             SongListType.ALL -> {

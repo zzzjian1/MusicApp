@@ -59,7 +59,78 @@ import androidx.compose.material3.TabRowDefaults
 import androidx.compose.material3.TabRowDefaults.tabIndicatorOffset
 import androidx.compose.runtime.getValue
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.ui.unit.lerp
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+// import com.zzzjian.music.domain.model.Song // Removed duplicate import
+
+@Composable
+fun ScanDialog(
+    onDismiss: () -> Unit,
+    onScan: () -> Unit
+) {
+    Dialog(onDismissRequest = onDismiss) {
+        Surface(
+            shape = RoundedCornerShape(20.dp),
+            color = Color.White,
+            modifier = Modifier.fillMaxWidth().padding(16.dp)
+        ) {
+            Column(
+                modifier = Modifier.padding(24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Search,
+                    contentDescription = null,
+                    tint = Blue500,
+                    modifier = Modifier.size(48.dp)
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "扫描本地音乐",
+                    fontSize = 20.sp,
+                    fontWeight = FontWeight.Bold,
+                    color = TextGray900
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "是否重新扫描本地存储中的所有音频文件？\n这可能需要一点时间。",
+                    fontSize = 14.sp,
+                    color = TextGray500,
+                    lineHeight = 20.sp,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                ) {
+                    OutlinedButton(
+                        onClick = onDismiss,
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text("取消", color = TextGray500)
+                    }
+                    Button(
+                        onClick = {
+                            onScan()
+                            onDismiss()
+                        },
+                        modifier = Modifier.weight(1f),
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Blue500)
+                    ) {
+                        Text("开始扫描")
+                    }
+                }
+            }
+        }
+    }
+} // End of ScanDialog
+
+// This logic was misplaced outside LibraryScreen in previous edits by mistake, 
+// causing showScanDialog (which is local to LibraryScreen) to be unresolved.
+// We need to move the usage back INTO LibraryScreen.
 
 @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
@@ -73,6 +144,7 @@ fun LibraryScreen(vm: PlayerViewModel) {
     val pagerState = rememberPagerState(pageCount = { categories.size })
     val scope = rememberCoroutineScope()
     var searchQuery by remember { mutableStateOf("") }
+    var showScanDialog by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
 
     fun filterSongs(list: List<Song>): List<Song> {
@@ -117,7 +189,7 @@ fun LibraryScreen(vm: PlayerViewModel) {
                         color = TextGray900
                     )
                     IconButton(
-                        onClick = { /* TODO */ },
+                        onClick = { showScanDialog = true },
                         modifier = Modifier
                             .size(36.dp)
                             .background(Color(0xFFF3F4F6), CircleShape)
@@ -278,6 +350,18 @@ fun LibraryScreen(vm: PlayerViewModel) {
                 )
             }
         }
+    }
+    
+    if (showScanDialog) {
+        ScanDialog(
+            onDismiss = { showScanDialog = false },
+            onScan = {
+                vm.initialize() // Re-trigger scanning
+                scope.launch {
+                    snackbarHostState.showSnackbar("已开始扫描本地音乐...", duration = SnackbarDuration.Short)
+                }
+            }
+        )
     }
 }
 

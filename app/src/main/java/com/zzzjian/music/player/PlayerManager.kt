@@ -9,11 +9,15 @@ import kotlinx.coroutines.flow.StateFlow
 import com.zzzjian.music.domain.model.PlaybackState
 import com.zzzjian.music.domain.model.RepeatMode
 import com.zzzjian.music.domain.model.Song
+import kotlinx.coroutines.*
 
 object PlayerManager {
     private var exo: ExoPlayer? = null
     private var currentPlaylist: List<Song> = emptyList()
     
+    private val scope = CoroutineScope(Dispatchers.Main + SupervisorJob())
+    private var progressJob: Job? = null
+
     private val _state = MutableStateFlow(
         PlaybackState(false, null, 0L, 0L, RepeatMode.NONE)
     )
@@ -22,6 +26,11 @@ object PlayerManager {
     private val listener = object : Player.Listener {
         override fun onIsPlayingChanged(isPlaying: Boolean) {
             _state.value = _state.value.copy(isPlaying = isPlaying)
+            if (isPlaying) {
+                startProgressUpdater()
+            } else {
+                stopProgressUpdater()
+            }
         }
 
         override fun onMediaItemTransition(mediaItem: MediaItem?, reason: Int) {
@@ -30,7 +39,29 @@ object PlayerManager {
 
         override fun onPlaybackStateChanged(playbackState: Int) {
             updateCurrentSong()
+            if (playbackState == Player.STATE_READY && _state.value.isPlaying) {
+                 startProgressUpdater()
+            }
         }
+    }
+
+    private fun startProgressUpdater() {
+        if (progressJob?.isActive == true) return
+        progressJob = scope.launch {
+            while (isActive) {
+                val p = exo ?: break
+                _state.value = _state.value.copy(
+                    position = p.currentPosition,
+                    duration = p.duration.coerceAtLeast(0L)
+                )
+                delay(500) // Update every 500ms
+            }
+        }
+    }
+
+    private fun stopProgressUpdater() {
+        progressJob?.cancel()
+        progressJob = null
     }
 
     fun initialize(context: Context) {
@@ -117,5 +148,11 @@ object PlayerManager {
             RepeatMode.ALL -> p.repeatMode = ExoPlayer.REPEAT_MODE_ALL
         }
         _state.value = _state.value.copy(repeatMode = mode)
+    }
+
+    fun seekTo(position: Long) {
+        val p = exo ?: return
+        p.seekTo(position)
+        _state.value = _state.value.copy(position = position)
     }
 }

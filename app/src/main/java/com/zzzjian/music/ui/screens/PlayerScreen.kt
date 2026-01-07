@@ -254,13 +254,18 @@ fun PlayerScreen(vm: PlayerViewModel) {
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Progress (Dummy for now)
+            // Progress
+            val progress = if (state.duration > 0) state.position.toFloat() / state.duration else 0f
             LinearProgressIndicator(
-                progress = 0.35f,
+                progress = progress,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(6.dp)
-                    .clip(RoundedCornerShape(4.dp)),
+                    .clip(RoundedCornerShape(4.dp))
+                    .clickable {
+                         // Simple seek on click logic could be added here if we knew the width
+                         // For now just display
+                    },
                 color = TextGray900,
                 trackColor = Gray200
             )
@@ -270,8 +275,8 @@ fun PlayerScreen(vm: PlayerViewModel) {
                     .padding(top = 8.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("1:24", fontSize = 12.sp, color = TextGray500, fontWeight = FontWeight.SemiBold)
-                Text("4:03", fontSize = 12.sp, color = TextGray500, fontWeight = FontWeight.SemiBold)
+                Text(formatTime(state.position), fontSize = 12.sp, color = TextGray500, fontWeight = FontWeight.SemiBold)
+                Text(formatTime(state.duration), fontSize = 12.sp, color = TextGray500, fontWeight = FontWeight.SemiBold)
             }
 
             Spacer(modifier = Modifier.height(40.dp))
@@ -360,6 +365,13 @@ fun PlayerScreen(vm: PlayerViewModel) {
             Spacer(modifier = Modifier.height(24.dp))
         }
     }
+}
+
+private fun formatTime(ms: Long): String {
+    val totalSeconds = ms / 1000
+    val minutes = totalSeconds / 60
+    val seconds = totalSeconds % 60
+    return String.format("%02d:%02d", minutes, seconds)
 }
 
 @Composable
