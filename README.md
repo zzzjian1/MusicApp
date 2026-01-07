@@ -15,7 +15,10 @@
 
 | 音乐库 (Library) | 播放器 (Player) | 猫窝 (Pet) |
 |:---:|:---:|:---:|
-| <img src="docs/screenshots/library.png" width="280"/> | <img src="docs/screenshots/player.png" width="280"/> | <img src="docs/screenshots/pet.png" width="280"/> |
+| <img width="1288" height="2688" alt="library" src="https://github.com/user-attachments/assets/e518931d-0334-4fd2-a9bb-cafe27a0aa20" />
+ | <img width="1288" height="2688" alt="player" src="https://github.com/user-attachments/assets/ef221f75-a77b-40aa-9c9b-39ee97874d0d" />
+ | <img width="1288" height="2688" alt="pet" src="https://github.com/user-attachments/assets/be195872-e3ca-4b28-ac26-46a9148923a4" />
+ |
 | *多标签页管理 / 智能搜索* | *沉浸式背景 / 拖动进度条* | *治愈系猫咪互动* |
 
 *   **🐱 治愈系品牌形象**
