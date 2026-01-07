@@ -47,6 +47,7 @@
 
 本项目包含一套完整的高保真 HTML 原型，位于 `docs/music-player` 目录下。
 原型采用 **Tailwind CSS** + **FontAwesome** 构建，模拟了 **iPhone 15 Pro** 的外壳展示效果。
+<img width="1982" height="1217" alt="image" src="https://github.com/user-attachments/assets/78faa3f8-3e58-457f-9c44-c311bff69939" />
 
 *   **在线预览**：可直接在浏览器打开 `docs/music-player/index.html` 查看。
 *   **设计对照**：Android 端代码严格还原了 HTML 原型的布局与视觉细节。
