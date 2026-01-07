@@ -176,52 +176,41 @@ fun LibraryScreen(vm: PlayerViewModel) {
                 // We can't easily get this from a LazyRow.
                 // Let's use a Row and horizontalScroll if items fit, or just ScrollableRow.
                 
-                // Since the user asked for animation, let's use `TabRow` if items fit, or `ScrollableTabRow`.
-                // Material3 ScrollableTabRow supports `indicator`.
-                // We can provide a custom indicator that is a Box with rounded corners.
-                // BUT, the standard indicator is usually a line at the bottom.
-                // We want a full background capsule.
-                
-                // Let's try to use a simple Row for now, assuming they fit or user scrolls Pager.
-                // Wait, if user swipes Pager, the Tabs should scroll?
-                // The prompt says "四个标签" (Four tabs), they likely fit.
-                
-                ScrollableTabRow(
+                // "Fixed" tabs that fill the width, with a "Jelly" capsule background
+                TabRow(
                     selectedTabIndex = pagerState.currentPage,
-                    edgePadding = 0.dp,
                     containerColor = Color.Transparent,
                     contentColor = TextGray900,
                     divider = {},
                     indicator = { tabPositions ->
-                        // Custom Capsule Indicator
-                        // Only draw if we have valid positions
+                        // Custom Jelly Capsule Indicator
                         if (tabPositions.isNotEmpty()) {
                             val currentTab = tabPositions[pagerState.currentPage.coerceIn(tabPositions.indices)]
                             
-                            // Calculate target width and offset based on pager offset for smooth animation
+                            // Calculate target based on pager offset
                             val currentFraction = pagerState.currentPageOffsetFraction
                             val targetIndex = if (currentFraction > 0) pagerState.currentPage + 1 else pagerState.currentPage - 1
-                            
-                            // Safe guard bounds
                             val validTargetIndex = targetIndex.coerceIn(0, tabPositions.lastIndex)
                             val targetTab = tabPositions[validTargetIndex]
-                            
-                            // Interpolate
                             val fraction = currentFraction.absoluteValue
+                            
+                            // "Jelly" Logic:
+                            // 1. TranslationX follows the scroll
+                            // 2. Width interpolates to the target tab
+                            val indicatorLeft = androidx.compose.ui.unit.lerp(currentTab.left, targetTab.left, fraction)
                             val indicatorWidth = androidx.compose.ui.unit.lerp(currentTab.width, targetTab.width, fraction)
-                            val indicatorOffset = androidx.compose.ui.unit.lerp(currentTab.left, targetTab.left, fraction)
                             
                             Box(
                                 Modifier
                                     .fillMaxHeight()
                                     .width(indicatorWidth)
-                                    .offset(x = indicatorOffset)
-                                    .padding(4.dp)
+                                    .offset(x = indicatorLeft)
+                                    .padding(4.dp) // Inset for floating look
                                     .background(Blue500, RoundedCornerShape(50))
                             )
                         }
                     },
-                    modifier = Modifier.fillMaxWidth().height(44.dp) // Increased height to accommodate padding
+                    modifier = Modifier.fillMaxWidth().height(44.dp)
                 ) {
                     categories.forEachIndexed { index, title ->
                         val isSelected = pagerState.currentPage == index
@@ -229,7 +218,9 @@ fun LibraryScreen(vm: PlayerViewModel) {
                         Tab(
                             selected = isSelected,
                             onClick = { scope.launch { pagerState.animateScrollToPage(index) } },
-                            modifier = Modifier.zIndex(1f) // Ensure text is above indicator
+                            modifier = Modifier
+                                .zIndex(1f)
+                                .clip(RoundedCornerShape(50)) // Clip ripple to capsule shape
                         ) {
                             // Text color animation
                             val targetColor = if (isSelected) Color.White else TextGray500
