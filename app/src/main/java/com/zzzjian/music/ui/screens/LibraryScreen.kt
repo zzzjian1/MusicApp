@@ -2,6 +2,9 @@ package com.zzzjian.music.ui.screens
 
 import androidx.compose.animation.core.*
 import androidx.compose.animation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.LocalIndication
+import androidx.compose.foundation.indication
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.gestures.detectTapGestures
@@ -230,6 +233,7 @@ fun HoldToDeleteItem(
     val haptic = LocalHapticFeedback.current
     var isHolding by remember { mutableStateOf(false) }
     val progress = remember { Animatable(0f) }
+    val interactionSource = remember { MutableInteractionSource() }
     
     // Shake Animation
     val shakeOffset = remember { Animatable(0f) }
@@ -288,13 +292,38 @@ fun HoldToDeleteItem(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
+                .indication(interactionSource, LocalIndication.current)
                 .pointerInput(Unit) {
                     detectTapGestures(
                         onTap = { onClick() },
-                        onPress = {
+                        onLongPress = {
                             isHolding = true
-                            tryAwaitRelease()
-                            isHolding = false
+                        },
+                        onPress = { offset ->
+                            val press = androidx.compose.foundation.interaction.PressInteraction.Press(offset)
+                            interactionSource.emit(press)
+                            
+                            try {
+                                kotlinx.coroutines.coroutineScope {
+                                    val holdJob = launch {
+                                        delay(200)
+                                        isHolding = true
+                                    }
+                                    try {
+                                        val released = tryAwaitRelease()
+                                        if (released) {
+                                            interactionSource.emit(androidx.compose.foundation.interaction.PressInteraction.Release(press))
+                                        } else {
+                                            interactionSource.emit(androidx.compose.foundation.interaction.PressInteraction.Cancel(press))
+                                        }
+                                    } finally {
+                                        holdJob.cancel()
+                                        isHolding = false
+                                    }
+                                }
+                            } finally {
+                                isHolding = false
+                            }
                         }
                     )
                 }
