@@ -16,6 +16,7 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Album
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.List
 import androidx.compose.material.icons.filled.Pause
@@ -44,7 +45,7 @@ import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
 import com.zzzjian.music.ui.screens.LibraryScreen
 import com.zzzjian.music.ui.screens.PlayerScreen
-import com.zzzjian.music.ui.screens.PlaylistsScreen
+import com.zzzjian.music.ui.screens.PetScreen
 import com.zzzjian.music.ui.theme.*
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -87,7 +88,7 @@ fun App(vm: PlayerViewModel) {
             
             // MiniPlayer Overlay (Only show if not on Player screen and song is playing/selected)
             val state by vm.playback.collectAsState()
-            if (currentRoute != "player" && state.currentSong != null) {
+            if (currentRoute != "player" && currentRoute != "pet" && state.currentSong != null) {
                 MiniPlayer(
                     vm = vm,
                     onClick = { nav.navigate("player") },
@@ -165,9 +166,9 @@ fun MiniPlayer(vm: PlayerViewModel, onClick: () -> Unit, modifier: Modifier = Mo
 data class TabItem(val route: String, val title: String, val icon: ImageVector)
 
 val tabs = listOf(
-    TabItem("library", "音乐库", Icons.Default.Home),
+    TabItem("library", "乐库", Icons.Default.Home),
     TabItem("player", "播放", Icons.Default.Album),
-    TabItem("playlists", "播放列表", Icons.Default.List)
+    TabItem("pet", "猫窝", Icons.Default.Favorite) // Using Favorite icon as placeholder for Pet/Face
 )
 
 @Composable
@@ -232,6 +233,6 @@ fun NavGraph(nav: NavHostController, vm: PlayerViewModel) {
     NavHost(navController = nav, startDestination = "library") {
         composable("library") { LibraryScreen(vm) }
         composable("player") { PlayerScreen(vm) }
-        composable("playlists") { PlaylistsScreen(vm) }
+        composable("pet") { PetScreen() }
     }
 }
