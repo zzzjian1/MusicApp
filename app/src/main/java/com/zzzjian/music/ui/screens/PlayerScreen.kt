@@ -59,10 +59,15 @@ fun PlayerScreen(vm: PlayerViewModel) {
     val rotationAnim = remember { Animatable(0f) }
     val scope = rememberCoroutineScope()
     
+    // Slider State
+    var isDragging by remember { mutableStateOf(false) }
+    var sliderPosition by remember { mutableFloatStateOf(0f) }
+
     // Reset offset when song changes (handled by AnimatedContent usually, but good for safety)
     LaunchedEffect(song) {
         offsetX.snapTo(0f)
         rotationAnim.snapTo(0f)
+        isDragging = false // Reset drag state on song change
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -255,27 +260,35 @@ fun PlayerScreen(vm: PlayerViewModel) {
             Spacer(modifier = Modifier.height(32.dp))
 
             // Progress
-            val progress = if (state.duration > 0) state.position.toFloat() / state.duration else 0f
-            LinearProgressIndicator(
-                progress = progress,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(6.dp)
-                    .clip(RoundedCornerShape(4.dp))
-                    .clickable {
-                         // Simple seek on click logic could be added here if we knew the width
-                         // For now just display
-                    },
-                color = TextGray900,
-                trackColor = Gray200
+            val currentPos = if (isDragging) sliderPosition else state.position.toFloat()
+            val totalDuration = state.duration.coerceAtLeast(1L).toFloat()
+
+            Slider(
+                value = currentPos,
+                onValueChange = { 
+                    isDragging = true
+                    sliderPosition = it
+                },
+                onValueChangeFinished = {
+                    vm.seekTo(sliderPosition.toLong())
+                    isDragging = false
+                },
+                valueRange = 0f..totalDuration,
+                colors = SliderDefaults.colors(
+                    thumbColor = TextGray900,
+                    activeTrackColor = TextGray900,
+                    inactiveTrackColor = Gray200
+                ),
+                modifier = Modifier.fillMaxWidth()
             )
+
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(top = 8.dp),
+                    .padding(horizontal = 4.dp),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text(formatTime(state.position), fontSize = 12.sp, color = TextGray500, fontWeight = FontWeight.SemiBold)
+                Text(formatTime(currentPos.toLong()), fontSize = 12.sp, color = TextGray500, fontWeight = FontWeight.SemiBold)
                 Text(formatTime(state.duration), fontSize = 12.sp, color = TextGray500, fontWeight = FontWeight.SemiBold)
             }
 

@@ -43,6 +43,11 @@ class MediaScanner {
                 
                 val contentUri = ContentUris.withAppendedId(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, id).toString()
                 
+                val albumArtUri = ContentUris.withAppendedId(
+                    Uri.parse("content://media/external/audio/albumart"),
+                    albumId
+                ).toString()
+                
                 list.add(
                     com.zzzjian.music.domain.model.Song(
                         id,
@@ -52,7 +57,7 @@ class MediaScanner {
                         duration,
                         path,
                         albumId,
-                        null,
+                        albumArtUri,
                         contentUri
                     )
                 )
