@@ -26,12 +26,26 @@
 
   <!-- Header -->
   <div class="px-5 pt-2 pb-4 bg-white sticky top-0 z-10">
-    <div class="flex justify-between items-center mb-4">
-      <h1 class="text-3xl font-bold tracking-tight">音乐库</h1>
-      <button class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-blue-500">
-        <i class="fas fa-plus"></i>
-      </button>
+    <div class="flex justify-between items-center mb-4 relative">
+      <h1 class="text-3xl font-bold tracking-tight">哈基米</h1>
+      <div class="relative">
+        <button id="menuBtn" class="w-9 h-9 rounded-full bg-gray-100 flex items-center justify-center text-blue-500 hover:bg-gray-200 transition-colors">
+          <i class="fas fa-ellipsis-v"></i>
+        </button>
+        <!-- Dropdown Menu -->
+        <div id="menuDropdown" class="hidden absolute right-0 top-12 w-48 bg-white rounded-xl shadow-xl border border-gray-100 py-2 z-50 origin-top-right transform transition-all">
+          <button onclick="alert('扫描本地音乐...')" class="w-full px-4 py-3 text-left text-sm hover:bg-gray-50 flex items-center gap-3 text-gray-700">
+            <i class="fas fa-sync-alt text-blue-500"></i>
+            <span>扫描本地音乐</span>
+          </button>
+          <button id="clearBtn" class="w-full px-4 py-3 text-left text-sm hover:bg-red-50 flex items-center gap-3 text-red-500">
+            <i class="fas fa-trash-alt"></i>
+            <span>清空音乐库</span>
+          </button>
+        </div>
+      </div>
     </div>
+    <div class="text-xs text-blue-500 font-medium mb-3">哈基米一下，烦恼全放下</div>
     
     <!-- Search Bar -->
     <div class="relative group">
@@ -141,10 +155,58 @@
       <span class="text-[10px] font-medium">播放</span>
     </button>
     <button class="flex flex-col items-center gap-1 w-16 text-gray-400 hover:text-gray-600">
-      <i class="fas fa-list-ul text-xl"></i>
-      <span class="text-[10px] font-medium">播放列表</span>
+      <i class="fas fa-heart text-xl"></i>
+      <span class="text-[10px] font-medium">猫窝</span>
     </button>
   </div>
 
+  <!-- Confirm Dialog -->
+  <div id="confirmDialog" class="hidden fixed inset-0 z-50 flex items-center justify-center px-4">
+    <div class="absolute inset-0 bg-black/40 backdrop-blur-sm transition-opacity" onclick="closeDialog()"></div>
+    <div class="bg-white rounded-2xl w-full max-w-sm p-6 relative z-10 shadow-2xl transform transition-all scale-100">
+      <h3 class="text-lg font-bold mb-2">清空音乐库</h3>
+      <p class="text-gray-500 text-sm mb-6">确定要清空乐库吗？此操作将移除列表中的所有歌曲（不会删除本地文件）。</p>
+      <div class="flex justify-end gap-3">
+        <button onclick="closeDialog()" class="px-4 py-2 text-gray-500 font-medium hover:bg-gray-50 rounded-lg">取消</button>
+        <button onclick="confirmClear()" class="px-4 py-2 text-red-500 font-medium hover:bg-red-50 rounded-lg">确定</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const menuBtn = document.getElementById('menuBtn');
+    const menuDropdown = document.getElementById('menuDropdown');
+    const clearBtn = document.getElementById('clearBtn');
+    const confirmDialog = document.getElementById('confirmDialog');
+
+    menuBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menuDropdown.classList.toggle('hidden');
+    });
+
+    document.addEventListener('click', () => {
+      menuDropdown.classList.add('hidden');
+    });
+
+    clearBtn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      menuDropdown.classList.add('hidden');
+      confirmDialog.classList.remove('hidden');
+    });
+
+    function closeDialog() {
+      confirmDialog.classList.add('hidden');
+    }
+
+    function confirmClear() {
+      closeDialog();
+      // Show Snackbar
+      const snackbar = document.createElement('div');
+      snackbar.className = 'fixed bottom-24 left-4 right-4 bg-gray-800 text-white px-4 py-3 rounded-lg shadow-lg text-sm z-50 flex justify-between items-center animate-[slideUp_0.3s_ease-out]';
+      snackbar.innerHTML = '<span>已清空音乐库</span><button class="text-blue-300">撤销</button>';
+      document.body.appendChild(snackbar);
+      setTimeout(() => snackbar.remove(), 3000);
+    }
+  </script>
 </body>
 </html>

@@ -11,6 +11,13 @@
 
 ## ✨ 核心亮点
 
+### 📸 App 截图展示
+
+| 音乐库 (Library) | 播放器 (Player) | 猫窝 (Pet) |
+|:---:|:---:|:---:|
+| <img src="docs/screenshots/library.png" width="280"/> | <img src="docs/screenshots/player.png" width="280"/> | <img src="docs/screenshots/pet.png" width="280"/> |
+| *多标签页管理 / 智能搜索* | *沉浸式背景 / 拖动进度条* | *治愈系猫咪互动* |
+
 *   **🐱 治愈系品牌形象**
     *   **萌系设计**：全新的“音符+猫爪”图标与粉蓝配色主题。
     *   **猫咪元素植入**：随处可见的猫咪彩蛋，无封面歌曲自动显示超萌猫咪写真。
