@@ -37,10 +37,20 @@ import com.zzzjian.music.domain.model.MockData
 @OptIn(androidx.compose.foundation.ExperimentalFoundationApi::class)
 @Composable
 fun LibraryScreen(vm: PlayerViewModel) {
-    val songs by vm.songs.collectAsState()
+    // val songs by vm.songs.collectAsState() // Unused for now, using MockData
     val categories = listOf("全部歌曲", "收藏", "最近播放", "下载")
     val pagerState = rememberPagerState(pageCount = { categories.size })
     val scope = rememberCoroutineScope()
+    var searchQuery by remember { mutableStateOf("") }
+
+    fun filterSongs(songs: List<Song>): List<Song> {
+        if (searchQuery.isBlank()) return songs
+        return songs.filter {
+            it.title.contains(searchQuery, ignoreCase = true) ||
+            it.artist.contains(searchQuery, ignoreCase = true) ||
+            it.album.contains(searchQuery, ignoreCase = true)
+        }
+    }
     
     Column(
         modifier = Modifier
@@ -83,8 +93,8 @@ fun LibraryScreen(vm: PlayerViewModel) {
         // Search Bar
         Spacer(modifier = Modifier.height(12.dp))
         TextField(
-            value = "",
-            onValueChange = {},
+            value = searchQuery,
+            onValueChange = { searchQuery = it },
             placeholder = { Text("搜索歌曲、艺术家、专辑", color = TextGray500, fontSize = 15.sp) },
             leadingIcon = { Icon(Icons.Default.Search, null, tint = Color.Gray) },
             modifier = Modifier
@@ -134,12 +144,14 @@ fun LibraryScreen(vm: PlayerViewModel) {
             modifier = Modifier.fillMaxSize(),
             verticalAlignment = Alignment.Top
         ) { page ->
-            when (page) {
-                0 -> SongList(MockData.allSongs, vm)
-                1 -> SongList(MockData.favoriteSongs, vm)
-                2 -> SongList(MockData.recentSongs, vm)
-                3 -> SongList(MockData.downloadedSongs, vm)
+            val currentList = when (page) {
+                0 -> MockData.allSongs
+                1 -> MockData.favoriteSongs
+                2 -> MockData.recentSongs
+                3 -> MockData.downloadedSongs
+                else -> emptyList()
             }
+            SongList(filterSongs(currentList), vm)
         }
     }
 }
@@ -155,7 +167,7 @@ fun SongList(songs: List<Song>, vm: PlayerViewModel) {
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(16.dp))
-                    .clickable { vm.play(idx) }
+                    .clickable { vm.play(songs, idx) }
                     .padding(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {

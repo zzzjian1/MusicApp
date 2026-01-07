@@ -16,6 +16,7 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     private val repo = MusicRepository()
     private val _songs = MutableStateFlow<List<Song>>(emptyList())
     val songs: StateFlow<List<Song>> = _songs
+    private var _currentQueue: List<Song> = emptyList()
     val playback: StateFlow<PlaybackState> = PlayerManager.state
 
     fun initialize() {
@@ -23,11 +24,13 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             val s = repo.getAllSongs(getApplication())
             _songs.value = s
+            _currentQueue = s // Default queue
         }
     }
 
-    fun play(index: Int) {
-        PlayerManager.setQueue(_songs.value, index)
+    fun play(songs: List<Song>, index: Int) {
+        _currentQueue = songs
+        PlayerManager.setQueue(songs, index)
     }
 
     fun playPause() {
@@ -35,11 +38,11 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     }
 
     fun next() {
-        PlayerManager.next(_songs.value)
+        PlayerManager.next(_currentQueue)
     }
 
     fun previous() {
-        PlayerManager.previous(_songs.value)
+        PlayerManager.previous(_currentQueue)
     }
 
     fun setRepeat(mode: RepeatMode) {

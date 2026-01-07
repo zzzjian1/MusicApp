@@ -38,6 +38,8 @@ import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.ui.platform.LocalContext
 import android.widget.Toast
 
+import androidx.compose.foundation.interaction.MutableInteractionSource
+
 @Composable
 fun PlayerScreen(vm: PlayerViewModel) {
     val state by vm.playback.collectAsState()
@@ -88,22 +90,29 @@ fun PlayerScreen(vm: PlayerViewModel) {
                     .background(Color.Gray.copy(alpha = 0.5f))
             )
             
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(20.dp)) // Fixed spacer instead of weight
 
             // Album Art
-            Card(
-                shape = RoundedCornerShape(32.dp),
-                elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
+            Box(
                 modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
+                    .weight(1.2f) // Increased weight to make album art larger
+                    .fillMaxWidth(),
+                contentAlignment = Alignment.Center
             ) {
-                AsyncImage(
-                    model = song?.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&h=600&fit=crop", // Cute Cat
-                    contentDescription = null,
-                    modifier = Modifier.fillMaxSize(),
-                    contentScale = ContentScale.Crop
-                )
+                Card(
+                    shape = RoundedCornerShape(32.dp),
+                    elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
+                    modifier = Modifier
+                        .aspectRatio(1f) // Maintain square aspect ratio
+                        .fillMaxHeight(0.95f) // Slightly reduce max height to avoid touching edges
+                ) {
+                    AsyncImage(
+                        model = song?.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&h=600&fit=crop", // Cute Cat
+                        contentDescription = null,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Crop
+                    )
+                }
             }
             
             Spacer(modifier = Modifier.height(40.dp))
@@ -219,32 +228,36 @@ fun PlayerScreen(vm: PlayerViewModel) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Gray200.copy(alpha = 0.5f), RoundedCornerShape(12.dp))
+                    .requiredHeight(44.dp) // Force height to not be compressed
+                    .background(Color(0xFFE5E7EB), RoundedCornerShape(22.dp))
                     .padding(4.dp)
             ) {
-                Row(modifier = Modifier.fillMaxWidth()) {
+                Row(
+                    modifier = Modifier.fillMaxSize(),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
                     RepeatOption(
                         text = "无循环",
                         selected = state.repeatMode == RepeatMode.NONE,
                         onClick = { vm.setRepeat(RepeatMode.NONE) },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f).fillMaxHeight()
                     )
                     RepeatOption(
                         text = "单曲",
                         selected = state.repeatMode == RepeatMode.ONE,
                         onClick = { vm.setRepeat(RepeatMode.ONE) },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f).fillMaxHeight()
                     )
                     RepeatOption(
                         text = "列表",
                         selected = state.repeatMode == RepeatMode.ALL,
                         onClick = { vm.setRepeat(RepeatMode.ALL) },
-                        modifier = Modifier.weight(1f)
+                        modifier = Modifier.weight(1f).fillMaxHeight()
                     )
                 }
             }
             
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(24.dp)) // Fixed spacer instead of weight
         }
     }
 }
@@ -256,20 +269,25 @@ fun RepeatOption(
     onClick: () -> Unit,
     modifier: Modifier = Modifier
 ) {
+    val backgroundColor = if (selected) Color.White else Color.Transparent
+    val textColor = if (selected) Color.Black else Color(0xFF6B7280)
+    val elevation = if (selected) 2.dp else 0.dp
+
     Box(
-        contentAlignment = Alignment.Center,
         modifier = modifier
-            .height(32.dp)
-            .clip(RoundedCornerShape(8.dp))
-            .background(if (selected) White else Color.Transparent)
-            .clickable(onClick = onClick)
-            .then(if (selected) Modifier.shadow(1.dp, RoundedCornerShape(8.dp)) else Modifier)
+            .padding(horizontal = 2.dp)
+            .shadow(elevation, RoundedCornerShape(18.dp), clip = false)
+            .background(backgroundColor, RoundedCornerShape(18.dp))
+            .clip(RoundedCornerShape(18.dp))
+            .clickable(onClick = onClick),
+        contentAlignment = Alignment.Center
     ) {
         Text(
             text = text,
-            fontSize = 12.sp,
-            fontWeight = FontWeight.SemiBold,
-            color = if (selected) TextGray900 else TextGray500
+            fontSize = 13.sp,
+            fontWeight = FontWeight.Medium,
+            color = textColor,
+            maxLines = 1
         )
     }
 }
