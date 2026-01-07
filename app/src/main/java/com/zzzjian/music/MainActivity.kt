@@ -43,6 +43,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
+import androidx.compose.ui.platform.LocalContext
+import com.zzzjian.music.utils.ArtistImageMapper
 import com.zzzjian.music.ui.screens.LibraryScreen
 import com.zzzjian.music.ui.screens.PlayerScreen
 import com.zzzjian.music.ui.screens.PetScreen
@@ -121,8 +124,16 @@ fun MiniPlayer(vm: PlayerViewModel, onClick: () -> Unit, modifier: Modifier = Mo
             modifier = Modifier.padding(8.dp)
         ) {
             // Spin animation logic can be added later
+            val artistImage = ArtistImageMapper.getArtistImage(song.artist)
+            val fallbackImage = artistImage ?: com.zzzjian.music.R.drawable.ic_hajimi_logo
+
             AsyncImage(
-                model = song.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=128&h=128&fit=crop", // Cute Cat
+                model = ImageRequest.Builder(LocalContext.current)
+                    .data(song.coverUrl)
+                    .error(fallbackImage)
+                    .fallback(fallbackImage)
+                    .crossfade(true)
+                    .build(),
                 contentDescription = null,
                 modifier = Modifier
                     .size(48.dp)
