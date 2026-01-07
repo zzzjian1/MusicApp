@@ -12,10 +12,27 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
+import com.zzzjian.music.domain.model.MockData
+
+enum class SongListType {
+    ALL, FAVORITE, RECENT, DOWNLOAD
+}
+
 class PlayerViewModel(app: Application) : AndroidViewModel(app) {
     private val repo = MusicRepository()
+    
     private val _songs = MutableStateFlow<List<Song>>(emptyList())
     val songs: StateFlow<List<Song>> = _songs
+    
+    private val _favoriteSongs = MutableStateFlow<List<Song>>(emptyList())
+    val favoriteSongs: StateFlow<List<Song>> = _favoriteSongs
+    
+    private val _recentSongs = MutableStateFlow<List<Song>>(emptyList())
+    val recentSongs: StateFlow<List<Song>> = _recentSongs
+    
+    private val _downloadedSongs = MutableStateFlow<List<Song>>(emptyList())
+    val downloadedSongs: StateFlow<List<Song>> = _downloadedSongs
+
     private var _currentQueue: List<Song> = emptyList()
     val playback: StateFlow<PlaybackState> = PlayerManager.state
 
@@ -26,10 +43,14 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
             var s = repo.getAllSongs(getApplication())
             // Fallback to MockData if no local songs found (for testing/demo)
             if (s.isEmpty()) {
-                s = com.zzzjian.music.domain.model.MockData.allSongs
+                s = MockData.allSongs
             }
             
             _songs.value = s
+            _favoriteSongs.value = MockData.favoriteSongs
+            _recentSongs.value = MockData.recentSongs
+            _downloadedSongs.value = MockData.downloadedSongs
+            
             _currentQueue = s // Default queue
             if (s.isNotEmpty()) {
                 PlayerManager.prepareQueue(s)
@@ -58,19 +79,45 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         PlayerManager.setRepeat(mode)
     }
 
-    fun deleteSong(song: Song) {
-        val currentList = _songs.value.toMutableList()
-        currentList.remove(song)
-        _songs.value = currentList
+    fun deleteSong(song: Song, type: SongListType = SongListType.ALL) {
+        when (type) {
+            SongListType.ALL -> {
+                val list = _songs.value.toMutableList()
+                list.remove(song)
+                _songs.value = list
+            }
+            SongListType.FAVORITE -> {
+                val list = _favoriteSongs.value.toMutableList()
+                list.remove(song)
+                _favoriteSongs.value = list
+            }
+            SongListType.RECENT -> {
+                val list = _recentSongs.value.toMutableList()
+                list.remove(song)
+                _recentSongs.value = list
+            }
+            SongListType.DOWNLOAD -> {
+                val list = _downloadedSongs.value.toMutableList()
+                list.remove(song)
+                _downloadedSongs.value = list
+            }
+        }
     }
 
-    fun restoreSong(song: Song, index: Int) {
-        val currentList = _songs.value.toMutableList()
-        if (index in 0..currentList.size) {
-            currentList.add(index, song)
-        } else {
-            currentList.add(song)
+    fun restoreSong(song: Song, index: Int, type: SongListType = SongListType.ALL) {
+        val targetFlow = when (type) {
+            SongListType.ALL -> _songs
+            SongListType.FAVORITE -> _favoriteSongs
+            SongListType.RECENT -> _recentSongs
+            SongListType.DOWNLOAD -> _downloadedSongs
         }
-        _songs.value = currentList
+        
+        val list = targetFlow.value.toMutableList()
+        if (index in 0..list.size) {
+            list.add(index, song)
+        } else {
+            list.add(song)
+        }
+        targetFlow.value = list
     }
 }

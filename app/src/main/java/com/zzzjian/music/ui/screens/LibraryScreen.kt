@@ -35,6 +35,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.zzzjian.music.PlayerViewModel
+import com.zzzjian.music.SongListType
 import com.zzzjian.music.ui.theme.*
 import androidx.compose.foundation.pager.HorizontalPager
 import androidx.compose.foundation.pager.rememberPagerState
@@ -64,6 +65,10 @@ import androidx.compose.ui.unit.lerp
 @Composable
 fun LibraryScreen(vm: PlayerViewModel) {
     val songs by vm.songs.collectAsState()
+    val favoriteSongs by vm.favoriteSongs.collectAsState()
+    val recentSongs by vm.recentSongs.collectAsState()
+    val downloadedSongs by vm.downloadedSongs.collectAsState()
+    
     val categories = listOf("全部歌曲", "收藏", "最近播放", "下载")
     val pagerState = rememberPagerState(pageCount = { categories.size })
     val scope = rememberCoroutineScope()
@@ -245,21 +250,20 @@ fun LibraryScreen(vm: PlayerViewModel) {
                 modifier = Modifier.fillMaxSize(),
                 verticalAlignment = Alignment.Top
             ) { page ->
-                // Only page 0 uses real data for now
-                val currentList = when (page) {
-                    0 -> songs
-                    1 -> MockData.favoriteSongs
-                    2 -> MockData.recentSongs
-                    3 -> MockData.downloadedSongs
-                    else -> emptyList()
+                val (currentList, listType) = when (page) {
+                    0 -> songs to SongListType.ALL
+                    1 -> favoriteSongs to SongListType.FAVORITE
+                    2 -> recentSongs to SongListType.RECENT
+                    3 -> downloadedSongs to SongListType.DOWNLOAD
+                    else -> emptyList<Song>() to SongListType.ALL
                 }
                 
                 SongList(
                     songs = filterSongs(currentList),
                     vm = vm,
-                    isDeletable = page == 0,
+                    isDeletable = true,
                     onDelete = { song, index ->
-                        vm.deleteSong(song)
+                        vm.deleteSong(song, listType)
                         scope.launch {
                             val result = snackbarHostState.showSnackbar(
                                 message = "已删除: ${song.title}",
@@ -267,7 +271,7 @@ fun LibraryScreen(vm: PlayerViewModel) {
                                 duration = SnackbarDuration.Short
                             )
                             if (result == SnackbarResult.ActionPerformed) {
-                                vm.restoreSong(song, index)
+                                vm.restoreSong(song, index, listType)
                             }
                         }
                     }
