@@ -70,6 +70,7 @@ fun PlayerScreen(vm: PlayerViewModel) {
         offsetX.snapTo(0f)
         rotationAnim.snapTo(0f)
         isDragging = false // Reset drag state on song change
+        isLiked = vm.isFavorite(song ?: return@LaunchedEffect)
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
@@ -258,9 +259,12 @@ fun PlayerScreen(vm: PlayerViewModel) {
                 }
                 IconButton(
                     onClick = {
-                        isLiked = !isLiked
-                        if (isLiked) {
-                            Toast.makeText(context, "哈基米～ 🐱", Toast.LENGTH_SHORT).show()
+                        song?.let { 
+                            vm.toggleFavorite(it) 
+                            isLiked = !isLiked
+                            if (isLiked) {
+                                Toast.makeText(context, "哈基米～ 🐱", Toast.LENGTH_SHORT).show()
+                            }
                         }
                     },
                     modifier = Modifier

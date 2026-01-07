@@ -139,6 +139,20 @@ class PlayerViewModel(app: Application) : AndroidViewModel(app) {
         targetFlow.value = list
     }
 
+    fun toggleFavorite(song: Song) {
+        val currentList = _favoriteSongs.value.toMutableList()
+        if (currentList.contains(song)) {
+            currentList.remove(song)
+        } else {
+            currentList.add(0, song) // Add to top
+        }
+        _favoriteSongs.value = currentList
+    }
+
+    fun isFavorite(song: Song): Boolean {
+        return _favoriteSongs.value.contains(song)
+    }
+
     fun clearAllSongs() {
         _songs.value = emptyList()
         _currentQueue = emptyList()
