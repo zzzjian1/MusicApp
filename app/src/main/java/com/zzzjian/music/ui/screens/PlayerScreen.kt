@@ -182,9 +182,7 @@ fun PlayerScreen(vm: PlayerViewModel) {
                     },
                     label = "CoverAnimation"
                 ) { currentSong ->
-                    Card(
-                        shape = RoundedCornerShape(32.dp),
-                        elevation = CardDefaults.cardElevation(defaultElevation = 20.dp),
+                    Box(
                         modifier = Modifier
                             .aspectRatio(1f)
                             .fillMaxHeight(0.95f)
@@ -193,7 +191,11 @@ fun PlayerScreen(vm: PlayerViewModel) {
                                 rotationZ = rotationAnim.value
                                 // Add transparency when dragging far
                                 alpha = 1f - (offsetX.value.absoluteValue / 1000f).coerceIn(0f, 1f)
+                                shadowElevation = 20.dp.toPx()
+                                shape = RoundedCornerShape(32.dp)
+                                clip = true
                             }
+                            .background(Color.White, RoundedCornerShape(32.dp)) // Add explicit background to ensure shadow works
                     ) {
                         AsyncImage(
                             model = currentSong?.coverUrl ?: "https://images.unsplash.com/photo-1514888286974-6c03e2ca1dba?w=600&h=600&fit=crop",
