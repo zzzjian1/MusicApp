@@ -39,6 +39,9 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
     private val _chatExamples = MutableStateFlow("")
     val chatExamples: StateFlow<String> = _chatExamples.asStateFlow()
     
+    private val _catName = MutableStateFlow("哈基米")
+    val catName: StateFlow<String> = _catName.asStateFlow()
+    
     // Chat State
     private val _messages = MutableStateFlow<List<ChatMessage>>(emptyList())
     val messages: StateFlow<List<ChatMessage>> = _messages.asStateFlow()
@@ -56,6 +59,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             launch { prefs.targetZodiac.collectLatest { _targetZodiac.value = it } }
             launch { prefs.isCatMode.collectLatest { _isCatMode.value = it } }
             launch { prefs.chatExamples.collectLatest { _chatExamples.value = it } }
+            launch { prefs.catName.collectLatest { _catName.value = it } }
             launch { 
                 chatDao.getAllMessages().collectLatest { entities ->
                     _messages.value = entities.map { ChatMessage(it.role, it.content) }
@@ -77,6 +81,12 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             prefs.saveChatExamples(truncated)
         }
     }
+    
+    fun updateCatName(name: String) {
+        viewModelScope.launch {
+            prefs.saveCatName(name)
+        }
+    }
 
     fun sendMessage(content: String) {
         if (content.isBlank() || _apiKey.value.isBlank()) return
@@ -93,7 +103,7 @@ class ChatViewModel(app: Application) : AndroidViewModel(app) {
             val targetProfile = "她的性格MBTI: ${_targetMbti.value}, 她的星座: ${_targetZodiac.value}"
             val persona = if (_isCatMode.value) "傲娇猫娘" else "温柔女友"
             
-            repo.streamChat(_apiKey.value, currentList, targetProfile, persona, _chatExamples.value)
+            repo.streamChat(_apiKey.value, currentList, targetProfile, persona, _chatExamples.value, _catName.value)
                 .onStart { 
                     _isLoading.value = true 
                     _currentStreamingMessage.value = ""

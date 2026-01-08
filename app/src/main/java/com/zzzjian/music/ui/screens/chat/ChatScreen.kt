@@ -51,6 +51,7 @@ fun ChatScreen(
     val messages by vm.messages.collectAsState()
     val streamingMsg by vm.currentStreamingMessage.collectAsState()
     val isLoading by vm.isLoading.collectAsState()
+    val catName by vm.catName.collectAsState()
     val listState = rememberLazyListState()
     val keyboardController = LocalSoftwareKeyboardController.current
     
@@ -83,21 +84,26 @@ fun ChatScreen(
             TopAppBar(
                 title = { 
                     Column {
-                        Text("哈基米", fontWeight = FontWeight.Bold)
-                        Text("在线中", fontSize = 12.sp, color = Color.Green)
+                        Text(catName, fontWeight = FontWeight.Bold, color = TextGray900)
+                        Text("在线中", fontSize = 12.sp, color = Color(0xFF4CAF50)) // Green 500
                     }
                 },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
-                        Icon(Icons.Default.ArrowBack, "Back")
+                        Icon(Icons.Default.ArrowBack, "Back", tint = TextGray900)
                     }
                 },
                 actions = {
                     IconButton(onClick = { showConfig = true }) {
-                        Icon(Icons.Default.Settings, "Config")
+                        Icon(Icons.Default.Settings, "Config", tint = TextGray900)
                     }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.White)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White,
+                    titleContentColor = TextGray900,
+                    navigationIconContentColor = TextGray900,
+                    actionIconContentColor = TextGray900
+                )
             )
         },
         containerColor = BgGray50,
@@ -129,7 +135,7 @@ fun ChatScreen(
                 
                 if (isLoading && streamingMsg.isEmpty()) {
                     item {
-                        Text("哈基米正在输入...", fontSize = 12.sp, color = Color.Gray, modifier = Modifier.padding(start = 16.dp))
+                        Text("$catName 正在输入...", fontSize = 12.sp, color = Color.Gray, modifier = Modifier.padding(start = 16.dp))
                     }
                 }
             }
@@ -170,7 +176,7 @@ fun ChatScreen(
                         value = inputText,
                         onValueChange = { inputText = it },
                         modifier = Modifier.weight(1f),
-                        placeholder = { Text("和哈基米说点什么...", color = Color.Gray) },
+                        placeholder = { Text("和$catName 说点什么...", color = Color.Gray) },
                         shape = RoundedCornerShape(24.dp),
                         colors = TextFieldDefaults.outlinedTextFieldColors(
                             focusedBorderColor = Blue500,

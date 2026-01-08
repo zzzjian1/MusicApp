@@ -19,6 +19,7 @@ class ChatPreferencesManager(private val context: Context) {
         val TARGET_ZODIAC = stringPreferencesKey("target_zodiac")
         val IS_CAT_MODE = booleanPreferencesKey("is_cat_mode")
         val CHAT_EXAMPLES = stringPreferencesKey("chat_examples")
+        val CAT_NAME = stringPreferencesKey("cat_name")
     }
 
     val apiKey: Flow<String> = context.dataStore.data.map { it[API_KEY] ?: "" }
@@ -26,6 +27,7 @@ class ChatPreferencesManager(private val context: Context) {
     val targetZodiac: Flow<String> = context.dataStore.data.map { it[TARGET_ZODIAC] ?: "双鱼座" }
     val isCatMode: Flow<Boolean> = context.dataStore.data.map { it[IS_CAT_MODE] ?: true }
     val chatExamples: Flow<String> = context.dataStore.data.map { it[CHAT_EXAMPLES] ?: "" }
+    val catName: Flow<String> = context.dataStore.data.map { it[CAT_NAME] ?: "哈基米" }
 
     suspend fun saveConfig(key: String, mbti: String, zodiac: String, isCat: Boolean) {
         context.dataStore.edit { prefs ->
@@ -39,6 +41,12 @@ class ChatPreferencesManager(private val context: Context) {
     suspend fun saveChatExamples(examples: String) {
         context.dataStore.edit { prefs ->
             prefs[CHAT_EXAMPLES] = examples
+        }
+    }
+
+    suspend fun saveCatName(name: String) {
+        context.dataStore.edit { prefs ->
+            prefs[CAT_NAME] = name
         }
     }
 }

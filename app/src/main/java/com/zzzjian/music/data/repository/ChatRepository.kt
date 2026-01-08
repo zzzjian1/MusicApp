@@ -43,11 +43,12 @@ class ChatRepository {
         messages: List<ChatMessage>,
         targetProfile: String = "", // e.g. "她的性格MBTI: INFP, 她的星座: 双鱼座"
         catPersona: String = "傲娇猫娘",
-        chatExamples: String = ""
+        chatExamples: String = "",
+        name: String = "哈基米"
     ): Flow<String> = callbackFlow {
         val basePrompt = if (catPersona == "傲娇猫娘") {
             """
-            你是一只名叫“哈基米”的$catPersona。
+            你是一只名叫“$name”的$catPersona。
             你的性格特点是：$targetProfile。
             请用符合你人设的语气回复，要可爱，偶尔可以傲娇。
             回复要简短，像是在聊天，不要长篇大论。
@@ -55,7 +56,7 @@ class ChatRepository {
             """.trimIndent()
         } else {
             """
-            你是一位名叫“哈基米”的温柔女友。
+            你是一位名叫“$name”的温柔女友。
             你的性格特点是：$targetProfile。
             请用温柔、体贴的语气回复，给予关心和鼓励。
             回复要自然、生活化，像是在微信聊天，不要太正式或说教。
