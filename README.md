@@ -89,8 +89,7 @@
     *   (可选) 导入你们的聊天记录 (`.txt`)，让 AI 学习她的语气。
 *   **语音输入**：点击输入框左侧的 🎤 麦克风，按住说话，解放双手。
 
-## 开始体验
-只支持Android!
+
 <img width="400" height="400" alt="1_1070358757_171_85_3_1076280462_4cb30413fee7ef1176126ed999cae03c" src="https://github.com/user-attachments/assets/fec104cb-f575-4fe4-9c0d-9b610a4ef7e4" />
 
 
