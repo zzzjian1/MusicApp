@@ -15,7 +15,7 @@
 ### 📸 沉浸式体验
 | 🎵 音乐库 | 🎧 播放器 | 🏠 猫窝 | 💬 灵魂伴侣 |
 |:---:|:---:|:---:|:---:|
-| <img width="280"  alt="library" src="https://github.com/user-attachments/assets/e518931d-0334-4fd2-a9bb-cafe27a0aa20" />| <img width="280"  alt="player" src="https://github.com/user-attachments/assets/ef221f75-a77b-40aa-9c9b-39ee97874d0d" />| <img width="280" alt="pet" src="https://github.com/user-attachments/assets/be195872-e3ca-4b28-ac26-46a9148923a4" />| <img width="280" alt="chat" src="https://github.com/user-attachments/assets/placeholder_chat.png" />|
+|![img_v3_02to_45f7fd78-933a-420d-b8d2-c4855614bc3g](https://github.com/user-attachments/assets/eecfd0a6-74f0-490c-b127-3ef306322535)|![img_v3_02to_392b70c7-ccbf-407c-947d-23cda895852g](https://github.com/user-attachments/assets/a86055ca-b098-4665-9f0f-b5ea0929ae96)|![img_v3_02to_0a90e2e0-295f-4169-ad3d-21bdfb999c9g](https://github.com/user-attachments/assets/3e1450dc-c5b0-48fd-995c-475d69f721ab) |![img_v3_02to_070290fa-4e78-4f54-bfbb-f007fcdf15cg](https://github.com/user-attachments/assets/341daa81-4f91-4d7f-a0c5-07b9065f8ff8) |
 
 ### 👩‍❤️‍👨 AI 聊天室：定制你的专属女友
 告别冰冷的机器回复，**哈基米** 采用 DeepSeek 大模型驱动，为你打造独一无二的灵魂伴侣。
