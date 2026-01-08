@@ -105,7 +105,7 @@ fun App(vm: PlayerViewModel) {
             
             // MiniPlayer Overlay (Only show if not on Player screen and song is playing/selected)
             val state by vm.playback.collectAsState()
-            if (currentRoute != "player" && currentRoute != "pet" && state.currentSong != null) {
+            if (currentRoute != "player" && currentRoute != "pet" && currentRoute != "chat" && state.currentSong != null) {
                 MiniPlayer(
                     vm = vm,
                     onClick = { nav.navigate("player") },

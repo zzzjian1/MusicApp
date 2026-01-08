@@ -13,15 +13,16 @@
 
 ### 📸 App 截图展示
 
-| 音乐库 (Library) | 播放器 (Player) | 猫窝 (Pet) |
-|:---:|:---:|:---:|
-| <img width="280"  alt="library" src="https://github.com/user-attachments/assets/e518931d-0334-4fd2-a9bb-cafe27a0aa20" />| <img width="280"  alt="player" src="https://github.com/user-attachments/assets/ef221f75-a77b-40aa-9c9b-39ee97874d0d" />| <img width="280" alt="pet" src="https://github.com/user-attachments/assets/be195872-e3ca-4b28-ac26-46a9148923a4" />|
-| *多标签页管理 / 智能搜索* | *沉浸式背景 / 拖动进度条* | *治愈系猫咪互动* |
+| 音乐库 (Library) | 播放器 (Player) | 猫窝 (Pet) | 聊天 (Chat) |
+|:---:|:---:|:---:|:---:|
+| <img width="280"  alt="library" src="https://github.com/user-attachments/assets/e518931d-0334-4fd2-a9bb-cafe27a0aa20" />| <img width="280"  alt="player" src="https://github.com/user-attachments/assets/ef221f75-a77b-40aa-9c9b-39ee97874d0d" />| <img width="280" alt="pet" src="https://github.com/user-attachments/assets/be195872-e3ca-4b28-ac26-46a9148923a4" />| <img width="280" alt="chat" src="https://github.com/user-attachments/assets/placeholder_chat.png" />|
+| *多标签页管理 / 智能搜索* | *沉浸式背景 / 拖动进度条* | *治愈系猫咪互动* | *AI 猫娘对话 / 微信风 UI* |
 
 *   **🐱 治愈系品牌形象**
     *   **萌系设计**：全新的“音符+猫爪”图标与粉蓝配色主题。
     *   **猫咪元素植入**：随处可见的猫咪彩蛋，无封面歌曲自动显示超萌猫咪写真。
     *   **趣味互动**：点击“喜欢”按钮时触发“哈基米～”弹幕/Toast 彩蛋。
+    *   **AI 聊天伴侣**：内置 DeepSeek 驱动的“傲娇猫娘”AI，支持流式对话，根据 MBTI/星座个性化回复，采用亲切的微信聊天风格，和你心里的那个她聊聊天吧。
     *   **自定义封面**：支持根据歌手名自动匹配本地预置的歌手封面（如周杰伦、陈奕迅等），如果找不到则显示默认的“戴耳机听歌猫咪”Logo。
 
 *   **🎧 沉浸式播放体验**
@@ -30,7 +31,8 @@
     *   **手势操作**：支持左右滑动切歌，丝滑的转场动画。
     *   **交互式进度条**：支持**拖动进度条**快进/快退，实时预览时间。
     *   **多种循环模式**：支持**无循环**、**单曲循环**、**列表循环**三种模式切换。
-    *   **全局 MiniPlayer**：底部的悬浮播放条，随时随地控制音乐，支持歌手封面显示。
+    *   **全局 MiniPlayer**：底部的悬浮播放条，随时随地控制音乐，支持歌手封面显示（聊天界面自动隐藏）。
+    *   **原生媒体通知**：集成 Android 系统级媒体通知栏（MediaStyle），支持锁屏控制和通知栏切歌。
 
 *   **🎵 智能音乐库**
     *   **多标签页管理**：支持“全部歌曲”、“收藏”、“最近播放”、“下载”四个页面，**左右滑动**丝滑切换。
@@ -124,6 +126,8 @@ MusicApp/
 - [x] 优化本地封面扫描与显示逻辑
 - [x] 支持歌手自定义封面配置
 - [x] 增加“一键清空音乐库”功能
+- [x] 实现原生 MediaStyle 通知栏控制
+- [x] 集成 DeepSeek AI 聊天室
 - [ ] 实现真实的播放列表增删改查（目前为 UI 演示）。
 - [ ] 完善“收藏”与“最近播放”功能的持久化存储（Room Database）。
 - [ ] 适配深色模式（Dark Mode）。
