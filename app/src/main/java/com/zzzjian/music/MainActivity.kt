@@ -53,16 +53,30 @@ import com.zzzjian.music.ui.theme.*
 
 import androidx.compose.foundation.interaction.MutableInteractionSource
 
+import android.content.Intent
+import com.zzzjian.music.service.MediaPlaybackService
+import com.zzzjian.music.ui.screens.chat.ChatScreen
+
 class MainActivity : ComponentActivity() {
     private val vm: PlayerViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         ensurePermissions()
+        startMusicService()
         setContent {
             MusicTheme {
                 App(vm)
             }
+        }
+    }
+
+    private fun startMusicService() {
+        val intent = Intent(this, MediaPlaybackService::class.java)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            startForegroundService(intent)
+        } else {
+            startService(intent)
         }
     }
 
@@ -244,6 +258,15 @@ fun NavGraph(nav: NavHostController, vm: PlayerViewModel) {
     NavHost(navController = nav, startDestination = "library") {
         composable("library") { LibraryScreen(vm) }
         composable("player") { PlayerScreen(vm) }
-        composable("pet") { PetScreen() }
+        composable("pet") { 
+            PetScreen(
+                onChatClick = { nav.navigate("chat") }
+            ) 
+        }
+        composable("chat") { 
+            ChatScreen(
+                onBack = { nav.popBackStack() }
+            ) 
+        }
     }
 }

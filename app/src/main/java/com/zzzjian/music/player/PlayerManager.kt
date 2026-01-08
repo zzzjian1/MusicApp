@@ -76,6 +76,10 @@ object PlayerManager {
         }
     }
     
+    fun getPlayer(): ExoPlayer? {
+        return exo
+    }
+    
     private fun updateCurrentSong() {
         val p = exo ?: return
         val idx = p.currentMediaItemIndex

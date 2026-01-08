@@ -1,16 +1,16 @@
 package com.zzzjian.music.ui.screens
 
 import androidx.compose.animation.animateColorAsState
-import androidx.compose.animation.core.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.ui.zIndex
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.ChatBubbleOutline
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.window.Dialog
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.detectDragGestures
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.animation.core.*
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -34,31 +34,35 @@ import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import com.zzzjian.music.ui.theme.BgGray50
 import com.zzzjian.music.ui.theme.Blue500
 import com.zzzjian.music.ui.theme.TextGray900
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.foundation.gestures.detectDragGestures
 import kotlin.math.min
 import kotlin.math.atan2
 import kotlin.math.cos
+import androidx.compose.ui.graphics.drawscope.withTransform
+import androidx.compose.ui.unit.sp
 import kotlin.math.sin
 import kotlin.random.Random
 
 @Composable
-fun PetScreen() {
+fun PetScreen(
+    onChatClick: () -> Unit = {}
+) {
     var touchPosition by remember { mutableStateOf(Offset.Unspecified) }
     var isHappy by remember { mutableStateOf(false) }
     var touchCount by remember { mutableStateOf(0) } // Combo counter
     var comboText by remember { mutableStateOf<String?>(null) } // Combo text popup
     val scope = rememberCoroutineScope()
-    
     // Cat Style State
+    
     var catSeed by remember { mutableStateOf(Random.nextLong()) }
     var catName by remember { mutableStateOf("哈基米") }
     var showRenameDialog by remember { mutableStateOf(false) }
+    var showChatDialog by remember { mutableStateOf(false) }
     var thoughtBubble by remember { mutableStateOf<String?>(null) }
     
     // Thoughts pool
@@ -260,6 +264,19 @@ fun PetScreen() {
                     Spacer(modifier = Modifier.width(8.dp))
                     Text("换一只猫", color = TextGray900)
                 }
+                
+                Button(
+                    onClick = {
+                        onChatClick()
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFE0E0E0)),
+                    shape = RoundedCornerShape(20.dp),
+                    modifier = Modifier.height(50.dp)
+                ) {
+                    Icon(Icons.Default.ChatBubbleOutline, contentDescription = null, modifier = Modifier.size(18.dp), tint = TextGray900)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("和她聊天", color = TextGray900)
+                }
             }
             
             Spacer(modifier = Modifier.height(40.dp))
@@ -272,6 +289,10 @@ fun PetScreen() {
             }
         }
     }
+
+    // if (showChatDialog) {
+    //    // ... Removed old placeholder dialog code ...
+    // }
 
     if (showRenameDialog) {
         var tempName by remember { mutableStateOf(TextFieldValue(catName)) }
