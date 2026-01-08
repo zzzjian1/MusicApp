@@ -48,9 +48,13 @@ import androidx.compose.ui.unit.sp
 import kotlin.math.sin
 import kotlin.random.Random
 
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.zzzjian.music.ChatViewModel
+
 @Composable
 fun PetScreen(
-    onChatClick: () -> Unit = {}
+    onChatClick: () -> Unit = {},
+    chatVm: ChatViewModel = viewModel()
 ) {
     var touchPosition by remember { mutableStateOf(Offset.Unspecified) }
     var isHappy by remember { mutableStateOf(false) }
@@ -61,7 +65,7 @@ fun PetScreen(
     // Cat Style State
     
     var catSeed by remember { mutableStateOf(Random.nextLong()) }
-    var catName by remember { mutableStateOf("哈基米") }
+    val catName by chatVm.catName.collectAsState()
     var showRenameDialog by remember { mutableStateOf(false) }
     var showChatDialog by remember { mutableStateOf(false) }
     var thoughtBubble by remember { mutableStateOf<String?>(null) }
@@ -318,7 +322,7 @@ fun PetScreen(
                     Button(
                         onClick = {
                             if (tempName.text.isNotBlank()) {
-                                catName = tempName.text
+                                chatVm.updateCatName(tempName.text)
                             }
                             showRenameDialog = false
                         },

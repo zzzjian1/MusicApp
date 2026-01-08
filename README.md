@@ -25,6 +25,13 @@
     *   **MBTI 人格**：是 INFP 的温柔敏感，还是 ENTP 的古灵精怪？
     *   **星座运势**：是双鱼座的浪漫多情，还是狮子座的霸道护短？
     *   *设置完成后，她的语气、态度和回复风格将完全改变！*
+    *   **支持的 MBTI 类型**：
+        *   `INTJ (建筑师)` / `INTP (逻辑学家)` / `ENTJ (指挥官)` / `ENTP (辩论家)`
+        *   `INFJ (提倡者)` / `INFP (调停者)` / `ENFJ (主人公)` / `ENFP (竞选者)`
+        *   `ISTJ (物流师)` / `ISFJ (守卫者)` / `ESTJ (总经理)` / `ESFJ (执政官)`
+        *   `ISTP (鉴赏家)` / `ISFP (探险家)` / `ESTP (企业家)` / `ESFP (表演者)`
+    *   **支持的星座**：
+        *   白羊 / 金牛 / 双子 / 巨蟹 / 狮子 / 处女 / 天秤 / 天蝎 / 射手 / 摩羯 / 水瓶 / 双鱼
 
 *   **🧠 记忆重现 (Few-Shot Learning)**
     *   **黑科技功能**：导入你们过往的聊天记录（.txt 文本），AI 会深度学习她的**口癖**（“捏”、“www”）、**常用表情**、**标点习惯**甚至**说话的节奏**。
@@ -56,7 +63,33 @@
     *   **智能扫描**：毫秒级扫描本地音频，自动解析内嵌封面；没有封面？没关系，AI 会为你生成一张超萌的猫咪写真。
     *   **原生级通知**：完全适配 Android 13+ 的媒体控制中心（MediaStyle），锁屏也能优雅切歌。
 
-## 🛠️ 技术探索：AI 主动发消息
+## � 使用指南
+
+### 1. 🎵 听歌模式
+*   **导入音乐**：App 会自动扫描手机存储中的音频文件。首次启动请允许**存储权限**。
+*   **播放控制**：
+    *   点击底部 **MiniPlayer** 进入全屏播放页。
+    *   **左右滑动**封面切换上一首/下一首。
+    *   **拖动进度条**可快速定位。
+*   **歌单管理**：在列表中**长按**歌曲可触发删除操作（带有酷炫的蓄力动画哦！）。
+
+### 2. 🐱 撸猫模式
+*   **进入猫窝**：点击底部导航栏的中间按钮。
+*   **互动**：
+    *   **摸摸头**：点击猫咪，它会做出开心的表情并增加亲密度。
+    *   **连击**：快速点击触发 Combo 特效，满屏爱心。
+    *   **改名**：点击顶部的名字胶囊，给它起个独一无二的名字（如“煤球”）。
+
+### 3. 💬 聊天模式
+*   **开启对话**：在猫窝页面点击“和她聊天”或通过底部导航进入。
+*   **灵魂注入**：
+    *   点击右上角 **⚙️ 设置**。
+    *   填入 DeepSeek API Key。
+    *   选择 **她的 MBTI** 和 **星座**。
+    *   (可选) 导入你们的聊天记录 (`.txt`)，让 AI 学习她的语气。
+*   **语音输入**：点击输入框左侧的 🎤 麦克风，按住说话，解放双手。
+
+## �🛠️ 技术探索：AI 主动发消息
 我们正在攻克 **AI 主动关怀** 技术，让陪伴不再被动：
 1.  **早安/晚安计划**：通过 `WorkManager` 定时触发，根据你的作息时间，由 AI 生成温暖的问候并通过通知送达。
 2.  **情绪感知**：当你频繁切歌或只听悲伤情歌时，AI 会主动发消息询问：“是不是心情不好？要不要聊聊？”
@@ -67,5 +100,68 @@
 2.  配置 DeepSeek API Key（在聊天设置中）。
 3.  编译运行，开始你的治愈之旅！
 
-## 📄 许可证
-MIT License
+## � 深度项目结构解析
+
+本项目采用现代化的 Android 架构（MVVM + Clean Architecture 思想），模块职责分明，易于维护和扩展。
+
+```
+MusicApp/
+├── app/
+│   ├── src/main/java/com/zzzjian/music/
+│   │   ├── data/                   # 数据层 (Data Layer)
+│   │   │   ├── api/                # Retrofit API 接口 (DeepSeekApiService)
+│   │   │   ├── db/                 # Room 数据库 (ChatDao, ChatHistoryEntity)
+│   │   │   ├── local/              # DataStore 偏好设置 (ChatPreferencesManager)
+│   │   │   ├── media/              # 媒体扫描与解析 (MediaScanner, MetadataParser)
+│   │   │   ├── model/              # 数据实体 (ChatMessage, Song, ChatRequest)
+│   │   │   └── repository/         # 仓库层 (ChatRepository, MusicRepository)
+│   │   │
+│   │   ├── domain/                 # 领域层 (Domain Layer)
+│   │   │   └── model/              # 业务模型 (PlaybackState, Playlist)
+│   │   │
+│   │   ├── player/                 # 播放器核心 (Player Core)
+│   │   │   └── PlayerManager.kt    # 封装 ExoPlayer，处理播放控制与状态分发
+│   │   │
+│   │   ├── service/                # 后台服务 (Service)
+│   │   │   └── MediaPlaybackService.kt # 承载媒体会话，保证后台播放不中断
+│   │   │
+│   │   ├── ui/                     # 界面层 (UI Layer)
+│   │   │   ├── components/         # 通用组件库 (MiniPlayer, SongList, Visualizer)
+│   │   │   ├── screens/            # 页面级组件
+│   │   │   │   ├── chat/           # 聊天室 (ChatScreen, ChatViewModel)
+│   │   │   │   ├── library/        # 音乐库 (LibraryScreen)
+│   │   │   │   ├── player/         # 播放页 (PlayerScreen)
+│   │   │   │   └── PetScreen.kt    # 电子宠物页 (Canvas 绘制逻辑)
+│   │   │   └── theme/              # Design System (颜色、字体、形状)
+│   │   │
+│   │   ├── utils/                  # 工具箱 (Extensions, ImageMapper, TimeUtils)
+│   │   └── MainActivity.kt         # App 入口与 Navigation 导航图配置
+│   │
+│   └── src/main/AndroidManifest.xml # 权限声明与组件注册
+│
+├── docs/                           # 文档与资源
+│   └── music-player/               # HTML 高保真交互原型
+└── README.md                       # 你正在阅读的文档
+```
+
+## 🤝 贡献指南
+我们非常欢迎你的加入！无论是修复 Bug、提交新功能，还是仅仅改进文档，每一份贡献都值得被铭记。
+
+1.  **Fork** 本仓库。
+2.  创建一个新的分支：`git checkout -b feature/AmazingFeature`。
+3.  提交你的更改：`git commit -m 'Add some AmazingFeature'`。
+4.  推送到分支：`git push origin feature/AmazingFeature`。
+5.  开启一个 **Pull Request**。
+
+## 📜 致谢
+感谢以下开源项目让 **哈基米** 成为可能：
+*   [Jetpack Compose](https://developer.android.com/jetpack/compose) - 现代化的 UI 工具包
+*   [ExoPlayer (Media3)](https://developer.android.com/jetpack/androidx/releases/media3) - 强大的媒体播放引擎
+*   [Retrofit](https://square.github.io/retrofit/) - 优雅的 HTTP 客户端
+*   [Coil](https://coil-kt.github.io/coil/) - 轻量级图片加载库
+*   [Room](https://developer.android.com/training/data-storage/room) - 稳健的本地数据库
+
+---
+<p align="center">
+  Made with ❤️ by zzzjian
+</p>
