@@ -57,6 +57,7 @@ fun PetScreen(
     var touchCount by remember { mutableStateOf(0) } // Combo counter
     var comboText by remember { mutableStateOf<String?>(null) } // Combo text popup
     val scope = rememberCoroutineScope()
+    
     // Cat Style State
     
     var catSeed by remember { mutableStateOf(Random.nextLong()) }

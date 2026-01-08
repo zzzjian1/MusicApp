@@ -96,7 +96,11 @@ fun App(vm: PlayerViewModel) {
     val navBackStackEntry by nav.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
     Scaffold(
-        bottomBar = { BottomBar(nav) },
+        bottomBar = { 
+            if (currentRoute != "chat") {
+                BottomBar(nav) 
+            }
+        },
         containerColor = BgGray50,
         contentWindowInsets = WindowInsets(0, 0, 0, 0) // We handle insets manually or let background fill
     ) { padding ->
