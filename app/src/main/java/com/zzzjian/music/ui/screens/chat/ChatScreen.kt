@@ -257,6 +257,7 @@ fun ConfigDialog(vm: ChatViewModel, onDismiss: () -> Unit) {
     var mbti by remember { mutableStateOf(vm.targetMbti.value) }
     var zodiac by remember { mutableStateOf(vm.targetZodiac.value) }
     var isCatMode by remember { mutableStateOf(vm.isCatMode.value) }
+    var musicAwareness by remember { mutableStateOf(vm.musicAwareness.value) }
     
     val context = LocalContext.current
     // File Picker for Chat History
@@ -344,6 +345,24 @@ fun ConfigDialog(vm: ChatViewModel, onDismiss: () -> Unit) {
                 
                 Spacer(modifier = Modifier.height(16.dp))
                 
+                Row(
+                    verticalAlignment = Alignment.CenterVertically,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text("音乐感知", modifier = Modifier.weight(1f))
+                    Switch(
+                        checked = musicAwareness,
+                        onCheckedChange = { musicAwareness = it }
+                    )
+                }
+                Text(
+                    text = "让 AI 知道你正在听什么歌",
+                    fontSize = 12.sp,
+                    color = Color.Gray
+                )
+                
+                Spacer(modifier = Modifier.height(16.dp))
+                
                 // Import Button
                 Button(
                     onClick = { launcher.launch("text/plain") },
@@ -359,6 +378,7 @@ fun ConfigDialog(vm: ChatViewModel, onDismiss: () -> Unit) {
                 Button(
                     onClick = {
                         vm.setConfig(apiKey, mbti, zodiac, isCatMode)
+                        vm.updateMusicAwareness(musicAwareness)
                         onDismiss()
                     },
                     modifier = Modifier.fillMaxWidth(),

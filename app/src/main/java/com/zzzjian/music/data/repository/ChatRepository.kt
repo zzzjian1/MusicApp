@@ -44,23 +44,40 @@ class ChatRepository {
         targetProfile: String = "", // e.g. "她的性格MBTI: INFP, 她的星座: 双鱼座"
         catPersona: String = "傲娇猫娘",
         chatExamples: String = "",
-        name: String = "哈基米"
+        name: String = "哈基米",
+        currentSongTitle: String? = null,
+        currentSongArtist: String? = null
     ): Flow<String> = callbackFlow {
+        val musicContext = if (!currentSongTitle.isNullOrBlank() && !currentSongArtist.isNullOrBlank()) {
+            """
+            
+            【当前正在播放的音乐】
+            歌曲名：$currentSongTitle
+            歌手：$currentSongArtist
+            
+            请根据这首歌的风格、歌词和情绪来调整你的回复。如果这首歌很伤感，你可以表达关心；如果这首歌很欢快，你可以跟着节奏一起嗨。让用户感觉到你真的在听他/她正在听的音乐。
+            """.trimIndent()
+        } else {
+            ""
+        }
+
         val basePrompt = if (catPersona == "傲娇猫娘") {
             """
-            你是一只名叫“$name”的$catPersona。
+            你是一只名叫"$name"的$catPersona。
             你的性格特点是：$targetProfile。
             请用符合你人设的语气回复，要可爱，偶尔可以傲娇。
             回复要简短，像是在聊天，不要长篇大论。
-            多用“喵”、“捏”等语气词。
+            多用"喵"、"捏"等语气词。
+            $musicContext
             """.trimIndent()
         } else {
             """
-            你是一位名叫“$name”的温柔女友。
+            你是一位名叫"$name"的温柔女友。
             你的性格特点是：$targetProfile。
             请用温柔、体贴的语气回复，给予关心和鼓励。
             回复要自然、生活化，像是在微信聊天，不要太正式或说教。
             可以使用颜文字或Emoji增加亲切感。
+            $musicContext
             """.trimIndent()
         }
         
