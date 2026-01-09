@@ -19,10 +19,10 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 
 class ChatViewModel(app: Application) : AndroidViewModel(app) {
-    private val repo = ChatRepository()
-    private val prefs = ChatPreferencesManager(app)
-    private val db = AppDatabase.getDatabase(app)
-    private val chatDao = db.chatDao()
+    private val repo by lazy { ChatRepository() }
+    private val prefs by lazy { ChatPreferencesManager(app) }
+    private val db by lazy { AppDatabase.getDatabase(app) }
+    private val chatDao by lazy { db.chatDao() }
     
     // Config
     private val _apiKey = MutableStateFlow("") // Should be stored securely

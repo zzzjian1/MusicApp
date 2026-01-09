@@ -18,9 +18,7 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 
 class ChatRepository {
-    private val api: DeepSeekApiService
-
-    init {
+    private val api: DeepSeekApiService by lazy {
         val logging = HttpLoggingInterceptor().apply {
             level = HttpLoggingInterceptor.Level.BODY
         }
@@ -35,7 +33,7 @@ class ChatRepository {
             .addConverterFactory(GsonConverterFactory.create())
             .build()
 
-        api = retrofit.create(DeepSeekApiService::class.java)
+        retrofit.create(DeepSeekApiService::class.java)
     }
 
     fun streamChat(
